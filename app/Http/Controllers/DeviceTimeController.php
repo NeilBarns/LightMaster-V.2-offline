@@ -13,18 +13,10 @@ use App\Enums\LogTypeEnum;
 use App\Enums\StoppageTypeEnum;
 use App\Enums\TimeTransactionTypeEnum;
 use App\Models\RptDeviceTimeTransactions;
-use App\Services\FirebaseService;
 use Illuminate\Support\Facades\Log;
 
 class DeviceTimeController extends Controller
 {
-    protected $firebase;
-
-    public function __construct(FirebaseService $firebase)
-    {
-        $this->firebase = $firebase;
-    }
-
     public function InsertDeviceIncrement(Request $request)
     {
         $request->validate([
@@ -263,71 +255,19 @@ class DeviceTimeController extends Controller
                 return response()->json(['error' => 'Base time not configured for this device.'], 400);
             }
 
-            // $deviceIpAddress = $device->IPAddress;
+            $deviceIpAddress = $device->IPAddress;
 
-            // $client = new \GuzzleHttp\Client();
-            // $response = $client->request('GET', "http://$deviceIpAddress/api/span", [
-            //     'query' => [
-            //         'time' => $baseTime->Time * 60,
-            //     ],
-            //     //'timeout' => 5, // Optional: Set a timeout in seconds
-            // ]);
+            $client = new \GuzzleHttp\Client();
+            $response = $client->request('GET', "http://$deviceIpAddress/api/span", [
+                'query' => [
+                    'time' => $baseTime->Time * 60,
+                ],
+                //'timeout' => 5, // Optional: Set a timeout in seconds
+            ]);
 
-            // if ($response->getStatusCode() == 200) {
+            if ($response->getStatusCode() == 200) {
 
-            //     // Start transaction
-            //     $transaction = DeviceTimeTransactions::create([
-            //         'DeviceID' => $device->DeviceID,
-            //         'TransactionType' => TimeTransactionTypeEnum::START,
-            //         'IsOpenTime' => false,
-            //         'StartTime' => $officialStartTime,
-            //         'Duration' => $baseTime->Time * 60,
-            //         'Rate' => $baseTime->Rate,
-            //         'Active' => true,
-            //         'CreatedByUserId' => auth()->id()
-            //     ]);
-
-            //     // Update device status to running
-            //     $device->DeviceStatusID = DeviceStatusEnum::RUNNING_ID;
-            //     $device->save();
-
-            //     // Calculate end time and total time
-            //     $startTime = Carbon::parse($transaction->StartTime);
-            //     $endTime = $startTime->clone()->addMinutes($baseTime->Time);
-            //     $totalTime = $baseTime->Time;
-            //     $totalRate = $baseTime->Rate;
-
-            //     //Log in RptDeviceTimeTransactions table
-            //     $rptTransactions = RptDeviceTimeTransactions::create([
-            //         'DeviceTimeTransactionsID' => $transaction->TransactionID,
-            //         'DeviceID' => $device->DeviceID,
-            //         'TransactionType' => TimeTransactionTypeEnum::START,
-            //         'IsOpenTime' => false,
-            //         'Time' => $officialStartTime,
-            //         'Duration' => $baseTime->Time * 60,
-            //         'Rate' => $baseTime->Rate,
-            //         'CreatedByUserId' => auth()->id()
-            //     ]);
-
-            //     return response()->json([
-            //         'success' => 'Device time started successfully.',
-            //         'startTime' => $startTime->format('Y-m-d H:i:s'),
-            //         'endTime' => $endTime->format('Y-m-d H:i:s'),
-            //         'totalTime' => $totalTime,
-            //         'totalRate' => $totalRate,
-            //     ]);
-            // }
-
-            $firebasePath = '/' . $device->ClientName . '/devices/' . $device->DeviceID;
-            $firebaseData = [
-                'command' => 'startRatedTime',
-                'span' => $baseTime->Time * 60
-            ];
-
-            // Check if data was successfully set in Firebase
-            $firebaseAcknowledged = $this->firebase->setData($firebasePath, $firebaseData);
-
-            if ($firebaseAcknowledged) {
+                // Start transaction
                 $transaction = DeviceTimeTransactions::create([
                     'DeviceID' => $device->DeviceID,
                     'TransactionType' => TimeTransactionTypeEnum::START,
@@ -367,13 +307,12 @@ class DeviceTimeController extends Controller
                     'endTime' => $endTime->format('Y-m-d H:i:s'),
                     'totalTime' => $totalTime,
                     'totalRate' => $totalRate,
-                    'test' => $firebaseData
                 ]);
             }
 
-            return response()->json(['success' => false, 'message' => 'Failed to start rated time to the device.'], 500);
+            return response()->json(['success' => false, 'message' => 'Failed to start time to the device.'], $response->getStatusCode());
         } catch (\Exception $e) {
-            Log::error('Error starting rated time for device ' . $id, ['error' => $e->getMessage()]);
+            Log::error('Error starting device time for device ' . $id, ['error' => $e->getMessage()]);
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
@@ -391,69 +330,14 @@ class DeviceTimeController extends Controller
                 return response()->json(['error' => 'Open time not configured for this device.'], 400);
             }
 
-            // $deviceIpAddress = $device->IPAddress;
+            $deviceIpAddress = $device->IPAddress;
 
-            // $client = new \GuzzleHttp\Client();
-            // $response = $client->get("http://$deviceIpAddress/api/startopentime");
+            $client = new \GuzzleHttp\Client();
+            $response = $client->get("http://$deviceIpAddress/api/startopentime");
 
-            // if ($response->getStatusCode() == 200) {
+            if ($response->getStatusCode() == 200) {
 
-            //     // Start transaction
-            //     $transaction = DeviceTimeTransactions::create([
-            //         'DeviceID' => $device->DeviceID,
-            //         'TransactionType' => TimeTransactionTypeEnum::START,
-            //         'IsOpenTime' => true,
-            //         'StartTime' => $officialStartTime,
-            //         'Duration' => 0,
-            //         'Rate' => $baseTime->Rate,
-            //         'Active' => true,
-            //         'CreatedByUserId' => auth()->id()
-            //     ]);
-
-            //     // Update device status to running
-            //     $device->DeviceStatusID = DeviceStatusEnum::RUNNING_ID;
-            //     $device->save();
-
-            //     // Calculate end time and total time
-            //     $startTime = Carbon::parse($transaction->StartTime);
-            //     $endTime = $startTime->clone()->addMinutes($baseTime->Time);
-            //     $totalTime = $baseTime->Time;
-            //     $totalRate = $baseTime->Rate;
-
-            //     //Log in RptDeviceTimeTransactions table
-            //     $rptTransactions = RptDeviceTimeTransactions::create([
-            //         'DeviceTimeTransactionsID' => $transaction->TransactionID,
-            //         'DeviceID' => $device->DeviceID,
-            //         'TransactionType' => TimeTransactionTypeEnum::START,
-            //         'IsOpenTime' => true,
-            //         'Time' => $officialStartTime,
-            //         'Duration' => 0,
-            //         'Rate' => $baseTime->Rate,
-            //         'CreatedByUserId' => auth()->id()
-            //     ]);
-
-            //     return response()->json([
-            //         'success' => 'Device time started successfully.',
-            //         'startTime' => $startTime->format('Y-m-d H:i:s'),
-            //         'endTime' => $endTime->format('Y-m-d H:i:s'),
-            //         'totalTime' => $totalTime,
-            //         'totalRate' => $totalRate,
-            //     ]);
-            // }
-
-            // return response()->json(['success' => false, 'message' => 'Failed to start time to the device.'], $response->getStatusCode());
-
-
-            $firebasePath = '/' . $device->ClientName . '/devices/' . $device->DeviceID;
-            $firebaseData = [
-                'command' => 'startOpenTime',
-                'span' => $baseTime->Time * 60
-            ];
-
-            // Check if data was successfully set in Firebase
-            $firebaseAcknowledged = $this->firebase->setData($firebasePath, $firebaseData);
-
-            if ($firebaseAcknowledged) {
+                // Start transaction
                 $transaction = DeviceTimeTransactions::create([
                     'DeviceID' => $device->DeviceID,
                     'TransactionType' => TimeTransactionTypeEnum::START,
@@ -488,141 +372,49 @@ class DeviceTimeController extends Controller
                 ]);
 
                 return response()->json([
-                    'success' => 'Device open time started successfully.',
+                    'success' => 'Device time started successfully.',
                     'startTime' => $startTime->format('Y-m-d H:i:s'),
                     'endTime' => $endTime->format('Y-m-d H:i:s'),
                     'totalTime' => $totalTime,
                     'totalRate' => $totalRate,
                 ]);
             }
-            else {
-                return response()->json(['success' => false, 'message' => 'Failed to start time to the device.'], 500);
-            }
 
+            return response()->json(['success' => false, 'message' => 'Failed to start time to the device.'], $response->getStatusCode());
         } catch (\Exception $e) {
-            Log::error('Error starting device open time for device ' . $id, ['error' => $e->getMessage()]);
+            Log::error('Error starting device time for device ' . $id, ['error' => $e->getMessage()]);
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 
-    public function EndDeviceTime($id, $remainingTime)
+    public function EndDeviceTime($id)
     {
         try {
             $device = Device::findOrFail($id);
             $officialStartTime = Carbon::now();
 
-            //$deviceIpAddress = $device->IPAddress;
+            $deviceIpAddress = $device->IPAddress;
 
-            // $client = new \GuzzleHttp\Client();
-            // $response = $client->request('GET', "http://$deviceIpAddress/api/stop");
+            $client = new \GuzzleHttp\Client();
+            $response = $client->request('GET', "http://$deviceIpAddress/api/stop");
 
-            // if ($response->getStatusCode() == 200) {
+            if ($response->getStatusCode() == 200) {
 
-            //     $responseData = json_decode($response->getBody()->getContents(), true);
-
-            //     // Extract the storedTimeInSeconds from the response
-            //     $storedTimeInSeconds = $responseData['storedTimeInSeconds'] ?? 0;
-            //     $storedTimeInSeconds = (int) $storedTimeInSeconds;
-
-            //     $calculabletransactions = DeviceTimeTransactions::where('DeviceID', $id)
-            //         ->where('Active', true)
-            //         ->get(['Duration', 'Rate', 'IsOpenTime', 'StartTime']);
-
-            //     $openTimeTransaction = $calculabletransactions->firstWhere('IsOpenTime', 1);
-
-            //     if ($openTimeTransaction) {
-            //         $startTime = Carbon::parse($openTimeTransaction->StartTime);
-            //         // $totalDuration = $startTime->diffInSeconds($officialStartTime, false);
-            //         $totalDuration = $storedTimeInSeconds;
-
-            //         $openTimeInfo = DeviceTime::where('DeviceID', $id)
-            //             ->where('TimeTypeID', DeviceTime::TIME_TYPE_OPEN)->first();
-
-            //         if (($storedTimeInSeconds / 60) < $openTimeInfo->Time) {
-            //             $totalRate = $openTimeInfo->Rate;
-            //         } else {
-            //             $totalRate = (($totalDuration / 60) / $openTimeInfo->Time) * $openTimeInfo->Rate;
-            //             $totalRate = intval($totalRate);
-            //         }
-            //     } else {
-            //         $totalDuration = $calculabletransactions->sum('Duration');
-            //         $totalRate = $calculabletransactions->sum('Rate');
-            //     }
-
-            //     $transaction = DeviceTimeTransactions::where('DeviceID', $id)
-            //         ->where('TransactionType', TimeTransactionTypeEnum::START)
-            //         ->where('Active', true)->first();
-
-            //     // Set all active transactions to inactive
-            //     DeviceTimeTransactions::where('DeviceID', $id)->update(['Active' => false]);
-
-            //     //Log in RptDeviceTimeTransactions table
-            //     if ($transaction) {
-
-            //         if ($openTimeTransaction) {
-            //             $transaction->update([
-            //                 'Duration' => $totalDuration,
-            //                 'EndTime' => $officialStartTime,
-            //                 'StoppageType' => StoppageTypeEnum::MANUAL
-            //             ]);
-
-            //             $startRptTransactions = RptDeviceTimeTransactions::where('DeviceID', $id)
-            //                 ->where('IsOpenTime', 1)
-            //                 ->where('TransactionType', TimeTransactionTypeEnum::START)
-            //                 ->orderBy('TransactionID', 'desc')
-            //                 ->first();
-
-            //             $startRptTransactions->update([
-            //                 'Duration' => $totalDuration,
-            //                 'Rate' => $totalRate
-            //             ]);
-            //         } else {
-            //             $transaction->update([
-            //                 'EndTime' => $officialStartTime,
-            //                 'StoppageType' => StoppageTypeEnum::MANUAL
-            //             ]);
-            //         }
-
-            //         $rptTransactions = RptDeviceTimeTransactions::create([
-            //             'DeviceTimeTransactionsID' => $transaction->TransactionID,
-            //             'DeviceID' => $device->DeviceID,
-            //             'TransactionType' => TimeTransactionTypeEnum::END,
-            //             'Time' => $officialStartTime,
-            //             'StoppageType' => StoppageTypeEnum::MANUAL,
-            //             'Duration' => $totalDuration,
-            //             'Rate' => $totalRate,
-            //             'CreatedByUserId' => auth()->id()
-            //         ]);
-            //     }
-
-            //     // Update device status to inactive
-            //     $device->DeviceStatusID = DeviceStatusEnum::INACTIVE_ID;
-            //     $device->save();
-
-            //     return response()->json(['success' => 'Device time ended successfully.']);
-            // }
-
-            
-
-            
-                //$responseData = json_decode($response->getBody()->getContents(), true);
+                $responseData = json_decode($response->getBody()->getContents(), true);
 
                 // Extract the storedTimeInSeconds from the response
-                //$storedTimeInSeconds = $responseData['storedTimeInSeconds'] ?? 0;
-                //$storedTimeInSeconds = (int) $storedTimeInSeconds;
+                $storedTimeInSeconds = $responseData['storedTimeInSeconds'] ?? 0;
+                $storedTimeInSeconds = (int) $storedTimeInSeconds;
 
                 $calculabletransactions = DeviceTimeTransactions::where('DeviceID', $id)
                     ->where('Active', true)
-                    ->whereIn('TransactionType', [\App\Enums\TimeTransactionTypeEnum::START,
-                        \App\Enums\TimeTransactionTypeEnum::EXTEND])
                     ->get(['Duration', 'Rate', 'IsOpenTime', 'StartTime']);
 
                 $openTimeTransaction = $calculabletransactions->firstWhere('IsOpenTime', 1);
 
                 if ($openTimeTransaction) {
                     $startTime = Carbon::parse($openTimeTransaction->StartTime);
-                    $totalDuration = $startTime->diffInSeconds($officialStartTime, false);
-                    $storedTimeInSeconds = (int) $remainingTime;
+                    // $totalDuration = $startTime->diffInSeconds($officialStartTime, false);
                     $totalDuration = $storedTimeInSeconds;
 
                     $openTimeInfo = DeviceTime::where('DeviceID', $id)
@@ -649,68 +441,51 @@ class DeviceTimeController extends Controller
                 //Log in RptDeviceTimeTransactions table
                 if ($transaction) {
 
-
-                    $firebasePath = '/' . $device->ClientName . '/devices/' . $device->DeviceID;
-                    $firebaseData = [
-                        'command' => 'endTime',
-                        'span' => 0
-                    ];
-
-                    // Check if data was successfully set in Firebase
-                    $firebaseAcknowledged = $this->firebase->setData($firebasePath, $firebaseData);
-
-                    if ($firebaseAcknowledged) { 
-                        if ($openTimeTransaction) {
-                            $transaction->update([
-                                'Duration' => $totalDuration,
-                                'EndTime' => $officialStartTime,
-                                'StoppageType' => StoppageTypeEnum::MANUAL
-                            ]);
-    
-                            $startRptTransactions = RptDeviceTimeTransactions::where('DeviceID', $id)
-                                ->where('IsOpenTime', 1)
-                                ->where('TransactionType', TimeTransactionTypeEnum::START)
-                                ->orderBy('TransactionID', 'desc')
-                                ->first();
-    
-                            $startRptTransactions->update([
-                                'Duration' => $totalDuration,
-                                'Rate' => $totalRate
-                            ]);
-                        } else {
-                            $transaction->update([
-                                'EndTime' => $officialStartTime,
-                                'StoppageType' => StoppageTypeEnum::MANUAL
-                            ]);
-                        }
-    
-                        $rptTransactions = RptDeviceTimeTransactions::create([
-                            'DeviceTimeTransactionsID' => $transaction->TransactionID,
-                            'DeviceID' => $device->DeviceID,
-                            'TransactionType' => TimeTransactionTypeEnum::END,
-                            'Time' => $officialStartTime,
-                            'StoppageType' => StoppageTypeEnum::MANUAL,
+                    if ($openTimeTransaction) {
+                        $transaction->update([
                             'Duration' => $totalDuration,
-                            'Rate' => $totalRate,
-                            'CreatedByUserId' => auth()->id()
+                            'EndTime' => $officialStartTime,
+                            'StoppageType' => StoppageTypeEnum::MANUAL
                         ]);
-    
-                        $device->DeviceStatusID = DeviceStatusEnum::INACTIVE_ID;
-                        $device->save();
-    
-                        return response()->json(['success' => 'Device time ended successfully.']);
+
+                        $startRptTransactions = RptDeviceTimeTransactions::where('DeviceID', $id)
+                            ->where('IsOpenTime', 1)
+                            ->where('TransactionType', TimeTransactionTypeEnum::START)
+                            ->orderBy('TransactionID', 'desc')
+                            ->first();
+
+                        $startRptTransactions->update([
+                            'Duration' => $totalDuration,
+                            'Rate' => $totalRate
+                        ]);
+                    } else {
+                        $transaction->update([
+                            'EndTime' => $officialStartTime,
+                            'StoppageType' => StoppageTypeEnum::MANUAL
+                        ]);
                     }
-                    else {
-                        return response()->json(['success' => false, 'message' => 'Error ending device time for device.'], 500);
-                    }
-                }
-                else
-                {
-                    return response()->json(['success' => 'No running device.']);
+
+                    $rptTransactions = RptDeviceTimeTransactions::create([
+                        'DeviceTimeTransactionsID' => $transaction->TransactionID,
+                        'DeviceID' => $device->DeviceID,
+                        'TransactionType' => TimeTransactionTypeEnum::END,
+                        'Time' => $officialStartTime,
+                        'StoppageType' => StoppageTypeEnum::MANUAL,
+                        'Duration' => $totalDuration,
+                        'Rate' => $totalRate,
+                        'CreatedByUserId' => auth()->id()
+                    ]);
                 }
 
-             //return response()->json(['success' => false, 'message' => 'Failed to reset the device.'], 500);
-            
+                // Update device status to inactive
+                $device->DeviceStatusID = DeviceStatusEnum::INACTIVE_ID;
+                $device->save();
+
+                return response()->json(['success' => 'Device time ended successfully.']);
+            }
+
+            // return response()->json(['success' => false, 'message' => 'Failed to reset the device.'], $response->getStatusCode());
+            return response()->json(['success' => false, 'message' => 'Failed to reset the device.'], $response->getStatusCode());
         } catch (\Exception $e) {
             Log::error('Error ending device time for device ' . $id, ['error' => $e->getMessage()]);
             return response()->json(['error' => $e->getMessage()], 500);
@@ -724,68 +499,18 @@ class DeviceTimeController extends Controller
             $increment = $request->input('increment');
             $rate = $request->input('rate');
             $officialStartTime = Carbon::now();
-            // $deviceIpAddress = $device->IPAddress;
+            $deviceIpAddress = $device->IPAddress;
 
-            // $client = new \GuzzleHttp\Client();
-            // $response = $client->request('GET', "http://$deviceIpAddress/api/span", [
-            //     'query' => [
-            //         'time' => $increment * 60,
-            //     ],
-            //     //'timeout' => 5, // Optional: Set a timeout in seconds
-            // ]);
+            $client = new \GuzzleHttp\Client();
+            $response = $client->request('GET', "http://$deviceIpAddress/api/span", [
+                'query' => [
+                    'time' => $increment * 60,
+                ],
+                //'timeout' => 5, // Optional: Set a timeout in seconds
+            ]);
 
-            // if ($response->getStatusCode() == 200) {
-            //     // Extend transaction
-            //     $transaction = DeviceTimeTransactions::create([
-            //         'DeviceID' => $device->DeviceID,
-            //         'TransactionType' => TimeTransactionTypeEnum::EXTEND,
-            //         'StartTime' => $officialStartTime,
-            //         'Duration' => $increment * 60,
-            //         'Rate' => $rate,
-            //         'Active' => true,
-            //         'CreatedByUserId' => auth()->id()
-            //     ]);
-
-            //     $rptTransactions = RptDeviceTimeTransactions::create([
-            //         'DeviceTimeTransactionsID' => $transaction->TransactionID,
-            //         'DeviceID' => $device->DeviceID,
-            //         'TransactionType' => TimeTransactionTypeEnum::EXTEND,
-            //         'Time' => $officialStartTime,
-            //         'Duration' => $increment * 60,
-            //         'Rate' => $rate,
-            //         'CreatedByUserId' => auth()->id()
-            //     ]);
-
-            //     // Fetch updated device time transactions
-            //     $activeTransactions = DeviceTimeTransactions::where('DeviceID', $id)->where('Active', true)->get();
-
-            //     // Calculate total time and rate
-            //     $totalTime = $activeTransactions->sum('Duration');
-            //     $totalRate = $activeTransactions->sum('Rate');
-
-            //     // Calculate the start and end times
-            //     $startTime = $activeTransactions->first() ? $activeTransactions->first()->StartTime : null;
-            //     $endTime = $startTime ? Carbon::parse($startTime)->addMinutes($totalTime) : null;
-
-            //     return response()->json([
-            //         'success' => 'Device time extended successfully.',
-            //         'totalTime' => $totalTime,
-            //         'totalRate' => $totalRate,
-            //         'startTime' => $startTime,
-            //         'endTime' => $endTime
-            //     ]);
-            // }
-
-            $firebasePath = '/' . $device->ClientName . '/devices/' . $device->DeviceID;
-            $firebaseData = [
-                'command' => 'extendTime',
-                'span' => $increment * 60
-            ];
-
-            // Check if data was successfully set in Firebase
-            $firebaseAcknowledged = $this->firebase->setData($firebasePath, $firebaseData);
-
-            if ($firebaseAcknowledged) {
+            if ($response->getStatusCode() == 200) {
+                // Extend transaction
                 $transaction = DeviceTimeTransactions::create([
                     'DeviceID' => $device->DeviceID,
                     'TransactionType' => TimeTransactionTypeEnum::EXTEND,
@@ -826,36 +551,9 @@ class DeviceTimeController extends Controller
                 ]);
             }
 
-            return response()->json(['success' => false, 'message' => 'Failed to extend time to the device.'], 500);
+            return response()->json(['success' => false, 'message' => 'Failed to extend time to the device.'], $response->getStatusCode());
         } catch (\Exception $e) {
             Log::error('Error extending device time for device ' . $id, ['error' => $e->getMessage()]);
-            return response()->json(['error' => $e->getMessage()], 500);
-        }
-    }
-
-    public function SyncDeviceTime($id, $remainingTime)
-    {
-        try {
-            $device = Device::findOrFail($id);
-           
-            $firebasePath = '/' . $device->ClientName . '/devices/' . $device->DeviceID;
-            $firebaseData = [
-                'command' => 'sync',
-                'span' => $remainingTime
-            ];
-
-            // Check if data was successfully set in Firebase
-            $firebaseAcknowledged = $this->firebase->setData($firebasePath, $firebaseData);
-
-            if ($firebaseAcknowledged) {
-                
-                return response()->json(['success' => true, 'message' => 'Successful to sync time to the device.'], 200);
-            }
-
-            return response()->json(['success' => false, 'message' => 'Failed to sync time to the device.'], 500);
-
-        } catch (\Exception $e) {
-            Log::error('Error syncing device time for device ' . $id, ['error' => $e->getMessage()]);
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
@@ -988,88 +686,23 @@ class DeviceTimeController extends Controller
         }
     }
 
-    public function PauseDeviceTime($id, $remainingTime)
+    public function PauseDeviceTime(Request $request, $id)
     {
         $device = Device::findOrFail($id);
         $officialStartTime = Carbon::now();
 
         $deviceIpAddress = $device->IPAddress;
         try {
-            // $client = new \GuzzleHttp\Client();
-            // $response = $client->get("http://$deviceIpAddress/api/pause");
+            $client = new \GuzzleHttp\Client();
+            $response = $client->get("http://$deviceIpAddress/api/pause");
 
-            // if ($response->getStatusCode() == 200) {
-            //     // Retrieve active transactions for the device, excluding PAUSE transactions
-            //     $activeTransactions = DeviceTimeTransactions::where('DeviceID', $id)
-            //         ->where('Active', true)
-            //         ->whereNotIn('TransactionType', [TimeTransactionTypeEnum::PAUSE, TimeTransactionTypeEnum::RESUME])
-            //         ->orderBy('TransactionID', 'desc')
-            //         ->get();
-
-
-            //     // Calculate total time and rate
-            //     $totalTime = $activeTransactions->sum('Duration');
-            //     $totalRate = $activeTransactions->sum('Rate');
-
-            //     $startTime = $activeTransactions->first() ? $activeTransactions->first()->StartTime : null;
-            //     $endTime = $startTime ? Carbon::parse($startTime)->addMinutes($totalTime) : null;
-
-
-            //     // Calculate elapsed time since the last start or extend transaction
-            //     $lastTransaction = $activeTransactions->first();
-
-            //     $elapsedTimeInSeconds = $officialStartTime->diffInSeconds($startTime);
-
-            //     // Calculate remaining time in seconds
-            //     $remainingTimeInSeconds = max(0, ($totalTime) - $elapsedTimeInSeconds);
-
-            //     // Start transaction
-            //     $transaction = DeviceTimeTransactions::create([
-            //         'DeviceID' => $device->DeviceID,
-            //         'TransactionType' => TimeTransactionTypeEnum::PAUSE,
-            //         'StartTime' => $officialStartTime,
-            //         'Duration' => $remainingTimeInSeconds,
-            //         'Rate' => 0,
-            //         'Active' => true,
-            //         'CreatedByUserId' => auth()->id()
-            //     ]);
-
-            //     // Update device status to pause
-            //     $device->DeviceStatusID = DeviceStatusEnum::PAUSE_ID;
-            //     $device->save();
-
-            //     $rptTransactions = RptDeviceTimeTransactions::create([
-            //         'DeviceTimeTransactionsID' => $transaction->TransactionID,
-            //         'DeviceID' => $device->DeviceID,
-            //         'TransactionType' => TimeTransactionTypeEnum::PAUSE,
-            //         'Time' => $officialStartTime,
-            //         'Duration' => $remainingTimeInSeconds,
-            //         'Rate' => 0,
-            //         'CreatedByUserId' => auth()->id()
-            //     ]);
-
-            //     return response()->json([
-            //         'success' => 'Device time paused successfully.',
-            //         'remaining_time' => $remainingTimeInSeconds,
-            //         'totalRate' => $totalRate,
-            //     ]);
-            // }
-
-            $firebasePath = '/' . $device->ClientName . '/devices/' . $device->DeviceID;
-            $firebaseData = [
-                'command' => 'pauseTime',
-                'span' => 0
-            ];
-
-            // Check if data was successfully set in Firebase
-            $firebaseAcknowledged = $this->firebase->setData($firebasePath, $firebaseData);
-
-            if ($firebaseAcknowledged) {
+            if ($response->getStatusCode() == 200) {
+                // Retrieve active transactions for the device, excluding PAUSE transactions
                 $activeTransactions = DeviceTimeTransactions::where('DeviceID', $id)
-                ->where('Active', true)
-                ->whereNotIn('TransactionType', [TimeTransactionTypeEnum::PAUSE, TimeTransactionTypeEnum::RESUME])
-                ->orderBy('TransactionID', 'desc')
-                ->get();
+                    ->where('Active', true)
+                    ->whereNotIn('TransactionType', [TimeTransactionTypeEnum::PAUSE, TimeTransactionTypeEnum::RESUME])
+                    ->orderBy('TransactionID', 'desc')
+                    ->get();
 
 
                 // Calculate total time and rate
@@ -1086,8 +719,7 @@ class DeviceTimeController extends Controller
                 $elapsedTimeInSeconds = $officialStartTime->diffInSeconds($startTime);
 
                 // Calculate remaining time in seconds
-                // $remainingTimeInSeconds = max(0, ($totalTime) - $elapsedTimeInSeconds);
-                $remainingTimeInSeconds = $totalTime - $remainingTime;
+                $remainingTimeInSeconds = max(0, ($totalTime) - $elapsedTimeInSeconds);
 
                 // Start transaction
                 $transaction = DeviceTimeTransactions::create([
@@ -1121,7 +753,7 @@ class DeviceTimeController extends Controller
                 ]);
             }
 
-            return response()->json(['success' => false, 'message' => 'Failed to pause time on the device.'], 500);
+            return response()->json(['success' => false, 'message' => 'Failed to pause time on the device.'], $response->getStatusCode());
         } catch (\Exception $e) {
             Log::error('Error pausing device time for device ' . $id, ['error' => $e->getMessage()]);
             return response()->json(['error' => $e->getMessage()], 500);
@@ -1133,79 +765,13 @@ class DeviceTimeController extends Controller
         $device = Device::findOrFail($id);
         $officialResumeTime = Carbon::now();
 
-        // $deviceIpAddress = $device->IPAddress;
+        $deviceIpAddress = $device->IPAddress;
         try {
-            // $client = new \GuzzleHttp\Client();
-            // $response = $client->get("http://$deviceIpAddress/api/resume");
+            $client = new \GuzzleHttp\Client();
+            $response = $client->get("http://$deviceIpAddress/api/resume");
 
-            // if ($response->getStatusCode() == 200) {
+            if ($response->getStatusCode() == 200) {
 
-            //     $pauseTransaction = DeviceTimeTransactions::where('DeviceID', $id)
-            //         ->where('TransactionType', TimeTransactionTypeEnum::PAUSE)
-            //         ->where('Active', true)
-            //         ->orderBy('TransactionID', 'desc')
-            //         ->first();
-
-            //     // Use the remaining time stored in the pause transaction
-            //     $remainingTimeInSeconds = $pauseTransaction->Duration;
-
-            //     // Create a resume transaction
-            //     $transaction = DeviceTimeTransactions::create([
-            //         'DeviceID' => $device->DeviceID,
-            //         'TransactionType' => TimeTransactionTypeEnum::RESUME,
-            //         'StartTime' => $officialResumeTime,
-            //         'Duration' => 0,
-            //         'Rate' => 0,
-            //         'Active' => true,
-            //         'CreatedByUserId' => auth()->id()
-            //     ]);
-
-            //     // Update device status to running
-            //     $device->DeviceStatusID = DeviceStatusEnum::RUNNING_ID;
-            //     $device->save();
-
-            //     RptDeviceTimeTransactions::create([
-            //         'DeviceTimeTransactionsID' => $transaction->TransactionID,
-            //         'DeviceID' => $device->DeviceID,
-            //         'TransactionType' => TimeTransactionTypeEnum::RESUME,
-            //         'Time' => $officialResumeTime,
-            //         'Duration' => 0,
-            //         'Rate' => 0,
-            //         'CreatedByUserId' => auth()->id()
-            //     ]);
-
-            //     $endTime = $officialResumeTime->addSeconds($remainingTimeInSeconds);
-
-            //     $activeTransactions = DeviceTimeTransactions::where('DeviceID', $id)
-            //         ->where('Active', true)
-            //         ->whereIn('TransactionType', [TimeTransactionTypeEnum::START, TimeTransactionTypeEnum::EXTEND])
-            //         ->get();
-
-            //     $startTime = $activeTransactions->where('TransactionType', TimeTransactionTypeEnum::START)->first();
-            //     // Calculate total time and rate
-            //     $totalTime = $activeTransactions->sum('Duration');
-            //     $totalRate = $activeTransactions->sum('Rate');
-
-            //     return response()->json([
-            //         'success' => true,
-            //         'message' => 'Device time resumed successfully.',
-            //         'startTime' => $startTime->StartTime->format('Y-m-d H:i:s'),
-            //         'endTime' => $endTime->format('Y-m-d H:i:s'),
-            //         'totalTime' => $totalTime,
-            //         'totalRate' => $totalRate,
-            //     ]);
-            // }
-
-            $firebasePath = '/' . $device->ClientName . '/devices/' . $device->DeviceID;
-            $firebaseData = [
-                'command' => 'resumeTime',
-                'span' => 0
-            ];
-
-            // Check if data was successfully set in Firebase
-            $firebaseAcknowledged = $this->firebase->setData($firebasePath, $firebaseData);
-
-            if ($firebaseAcknowledged) {
                 $pauseTransaction = DeviceTimeTransactions::where('DeviceID', $id)
                     ->where('TransactionType', TimeTransactionTypeEnum::PAUSE)
                     ->where('Active', true)
@@ -1262,7 +828,7 @@ class DeviceTimeController extends Controller
                 ]);
             }
 
-            return response()->json(['success' => false, 'message' => 'Failed to resume time on the device.'], 500);
+            return response()->json(['success' => false, 'message' => 'Failed to resume time on the device.'], $response->getStatusCode());
         } catch (\Exception $e) {
             Log::error('Error resuming device time for device ' . $id, ['error' => $e->getMessage()]);
             return response()->json(['error' => $e->getMessage()], 500);
@@ -1280,56 +846,14 @@ class DeviceTimeController extends Controller
             $reason = $request->input('reason');
             $officialStartTime =   Carbon::now();
 
-            //$deviceIpAddress = $device->IPAddress;
+            $deviceIpAddress = $device->IPAddress;
 
-            // $client = new \GuzzleHttp\Client();
-            // $response = $client->get("http://$deviceIpAddress/api/startfree");
+            $client = new \GuzzleHttp\Client();
+            $response = $client->get("http://$deviceIpAddress/api/startfree");
 
-            // if ($response->getStatusCode() == 200) {
+            if ($response->getStatusCode() == 200) {
 
-            //     // Start transaction
-            //     $transaction = DeviceTimeTransactions::create([
-            //         'DeviceID' => $device->DeviceID,
-            //         'TransactionType' => TimeTransactionTypeEnum::STARTFREE,
-            //         'StartTime' => $officialStartTime,
-            //         'Duration' => 0,
-            //         'Rate' => 0,
-            //         'Active' => true,
-            //         'Reason' => $reason,
-            //         'CreatedByUserId' => auth()->id()
-            //     ]);
-
-            //     // Update device status to running
-            //     $device->DeviceStatusID = DeviceStatusEnum::STARTFREE_ID;
-            //     $device->save();
-
-            //     //Log in RptDeviceTimeTransactions table
-            //     $rptTransactions = RptDeviceTimeTransactions::create([
-            //         'DeviceTimeTransactionsID' => $transaction->TransactionID,
-            //         'DeviceID' => $device->DeviceID,
-            //         'TransactionType' => TimeTransactionTypeEnum::STARTFREE,
-            //         'Time' => $officialStartTime,
-            //         'Duration' => 0,
-            //         'Rate' => 0,
-            //         'Reason' => $reason,
-            //         'CreatedByUserId' => auth()->id()
-            //     ]);
-
-            //     return response()->json([
-            //         'success' => 'Device time started successfully.'
-            //     ]);
-            // }
-
-            $firebasePath = '/' . $device->ClientName . '/devices/' . $device->DeviceID;
-            $firebaseData = [
-                    'command' => 'startFree',
-                    'span' => 0
-            ];
-    
-            // Check if data was successfully set in Firebase
-            $firebaseAcknowledged = $this->firebase->setData($firebasePath, $firebaseData);
-    
-            if ($firebaseAcknowledged) {
+                // Start transaction
                 $transaction = DeviceTimeTransactions::create([
                     'DeviceID' => $device->DeviceID,
                     'TransactionType' => TimeTransactionTypeEnum::STARTFREE,
@@ -1358,11 +882,11 @@ class DeviceTimeController extends Controller
                 ]);
 
                 return response()->json([
-                    'success' => 'Device free light started successfully.'
+                    'success' => 'Device time started successfully.'
                 ]);
             }
 
-            return response()->json(['success' => false, 'message' => 'Failed to start time to the device.'], 500);
+            return response()->json(['success' => false, 'message' => 'Failed to start time to the device.'], $response->getStatusCode());
         } catch (\Exception $e) {
             Log::error('Error starting free light for device ' . $id, ['error' => $e->getMessage()]);
             return response()->json(['error' => $e->getMessage()], 500);
@@ -1375,61 +899,20 @@ class DeviceTimeController extends Controller
             $device = Device::findOrFail($id);
             $officialStartTime = Carbon::now();
 
-            // $deviceIpAddress = $device->IPAddress;
+            $deviceIpAddress = $device->IPAddress;
 
-            // $client = new \GuzzleHttp\Client();
-            // $response = $client->get("http://$deviceIpAddress/api/stopfree");
+            $client = new \GuzzleHttp\Client();
+            $response = $client->get("http://$deviceIpAddress/api/stopfree");
 
-            // if ($response->getStatusCode() == 200) {
-            //     // Retrieve a single transaction
-            //     $freeTransaction = DeviceTimeTransactions::where('DeviceID', $id)
-            //         ->where('Active', true)
-            //         ->where('TransactionType', TimeTransactionTypeEnum::STARTFREE)
-            //         ->orderBy('TransactionID', 'desc')
-            //         ->first();
-
-            //     // Check if the transaction exists
-            //     if ($freeTransaction) {
-            //         $freeTransaction->EndTime = $officialStartTime;
-            //         $freeTransaction->Active = false;
-            //         $freeTransaction->StoppageType = StoppageTypeEnum::MANUAL;
-            //         $freeTransaction->save();
-
-            //         // Update device status to inactive
-            //         $device->DeviceStatusID = DeviceStatusEnum::INACTIVE_ID;
-            //         $device->save();
-
-            //         // Log in RptDeviceTimeTransactions table
-            //         $rptTransactions = RptDeviceTimeTransactions::create([
-            //             'DeviceTimeTransactionsID' => $freeTransaction->TransactionID,
-            //             'DeviceID' => $id,
-            //             'TransactionType' => TimeTransactionTypeEnum::ENDFREE,
-            //             'Time' => $officialStartTime,
-            //             'Duration' => $officialStartTime->diffInSeconds($freeTransaction->StartTime),
-            //             'Rate' => 0,
-            //             'CreatedByUserId' => auth()->id()
-            //         ]);
-            //     }
-            //         return response()->json(['success' => true, 'message' => 'Free light stopped successfully']);
-            // }
-
-            $firebasePath = '/' . $device->ClientName . '/devices/' . $device->DeviceID;
-            $firebaseData = [
-                    'command' => 'stopFree',
-                    'span' => 0
-            ];
-
-            // Check if data was successfully set in Firebase
-            $firebaseAcknowledged = $this->firebase->setData($firebasePath, $firebaseData);
-
-            if ($firebaseAcknowledged) {
+            if ($response->getStatusCode() == 200) {
+                // Retrieve a single transaction
                 $freeTransaction = DeviceTimeTransactions::where('DeviceID', $id)
-                ->where('Active', true)
-                ->where('TransactionType', TimeTransactionTypeEnum::STARTFREE)
-                ->orderBy('TransactionID', 'desc')
-                ->first();
+                    ->where('Active', true)
+                    ->where('TransactionType', TimeTransactionTypeEnum::STARTFREE)
+                    ->orderBy('TransactionID', 'desc')
+                    ->first();
 
-            // Check if the transaction exists
+                // Check if the transaction exists
                 if ($freeTransaction) {
                     $freeTransaction->EndTime = $officialStartTime;
                     $freeTransaction->Active = false;
@@ -1450,14 +933,12 @@ class DeviceTimeController extends Controller
                         'Rate' => 0,
                         'CreatedByUserId' => auth()->id()
                     ]);
-
-                    return response()->json([
-                        'success' => 'Device free light stopped successfully.'
-                    ]);
                 }
+
+                return response()->json(['success' => true, 'message' => 'Free light stopped successfully']);
             }
 
-            return response()->json(['success' => false, 'message' => 'Failed to stop free light'], 500);
+            return response()->json(['success' => false, 'message' => 'Failed to stop free light'], $response->getStatusCode());
         } catch (\Exception $e) {
             Log::error('Error stopping free light for device ' . $id, ['error' => $e->getMessage()]);
             return response()->json(['success' => false, 'message' => 'Failed to stop free light'], 500);

@@ -21,10 +21,10 @@ class AuthController extends Controller
 
         try {
             $user = Users::where('UserName', $credentials['username'])
-                ->with(['Roles' => function ($query) {
-                    $query->select('Roles.RoleId', 'Roles.RoleName')
-                        ->with(['Permissions' => function ($query) {
-                            $query->select('Permissions.PermissionId', 'Permissions.PermissionName');
+                ->with(['roles' => function ($query) {
+                    $query->select('roles.RoleId', 'roles.RoleName')
+                        ->with(['permissions' => function ($query) {
+                            $query->select('permissions.PermissionId', 'permissions.PermissionName');
                         }]);
                 }])
                 ->first();

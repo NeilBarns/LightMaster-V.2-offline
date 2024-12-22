@@ -10,7 +10,7 @@ use App\Enums\PermissionsEnum;
     <button class="ui icon button" onclick="window.location='{{ route('devicemanagement') }}'">
         <i class="arrow left icon"></i>
     </button>
-    <span class="self-center ml-2">Device Details</span>
+    <span class="self-center ml-2">Device Management > Device Details</span>
 </div>
 @endsection
 
@@ -31,161 +31,158 @@ use App\Enums\PermissionsEnum;
             </div>
         </div>
         <div class="row">
-            <div class="column">
-                <div class="ui three column stackable grid">
-                    <div class="three wide column">
-                        <div class="flex flex-col justify-center h-full w-full">
-                            <div class="flex items-center">
-                                <h2 class="ui header !text-lg" id="deviceNameDisplay">{{ $device->ExternalDeviceName }}</h2>
-                                @can([PermissionsEnum::CAN_EDIT_DEVICE_NAME, PermissionsEnum::ALL_ACCESS_TO_DEVICE])
-                                <button class="ml-2" id="editDeviceNameButton">
-                                    <i class="pencil icon"></i>
-                                </button>
-                                @endcan
-                            </div>
-        
-        
-                            <!-- Hidden input and save button -->
-                            <div class="ui input items-center mt-2 w-1/2 !hidden" id="editDeviceNameSection">
-                                <input type="text" id="deviceNameInput" class="ui small input !mr-2"
-                                    value="{{ $device->ExternalDeviceName }}">
-                                <button class="ui small blue button ml-2" id="saveDeviceNameButton">Save</button>
-                            </div>
-        
-                            <span class="text-sm text-gray-500 mt-2">{{ $device->deviceStatus->Status }}</span>
-                            <span class="text-sm text-gray-500 mt-2">Added date: {{ $device->created_at->format('m/d/Y') }}</span>
-                            <span class="text-sm text-gray-500 mt-2">Operation date: {{ $device->OperationDate ?
-                                $device->OperationDate->format('m/d/Y') : 'N/A' }}</span>
-                            <span class="text-sm text-gray-500 mt-2">IP Address: {{ $device->IPAddress ? $device->IPAddress :
-                                'N/A' }}</span>
-                        </div>
-                    </div>
-                    <div class="nine wide column"">
-                        
-                    </div>
-                    <div class="four wide column">
-                        @if($device->deviceStatus->Status == App\Enums\DeviceStatusEnum::PENDING)
-                        @can([PermissionsEnum::CAN_DEPLOY_DEVICE, PermissionsEnum::ALL_ACCESS_TO_DEVICE])
-                        <form action="{{ route('device.deploy', $device->DeviceID) }}" method="POST" class="!float-right">
-                            @csrf
-                            <button type="submit" id="btnDeploy"
-                                class="ui green small compact labeled icon button float-right !mt-2" @if(empty($baseTime) ||
-                                $deviceTimes->isEmpty()) disabled @endif>
-                                <i class="rocket icon"></i>
-                                Deploy
-                            </button>
-                        </form>
+            <div class="column !pt-0 !pr-0 !pb-0">
+                <div class="flex flex-col justify-center h-full w-full">
+                    <div class="flex items-center">
+                        <h2 class="ui header" id="deviceNameDisplay">{{ $device->ExternalDeviceName }}</h2>
+                        @can([PermissionsEnum::CAN_EDIT_DEVICE_NAME, PermissionsEnum::ALL_ACCESS_TO_DEVICE])
+                        <button class="ml-2" id="editDeviceNameButton">
+                            <i class="pencil icon"></i>
+                        </button>
                         @endcan
-                        @else
-                        @if ($device->deviceStatus->Status == App\Enums\DeviceStatusEnum::DISABLED)
-                        <div class="tooltip-container !float-right">
-                            <form id="enable-form" action="{{ route('device.enable', $device->DeviceID) }}" method="POST">
-                                @csrf
-                                <button id="btnEnable" data-id="{{ $device->DeviceID }}"
-                                    class="ui green small compact labeled icon button float-right !mt-2">
-                                    <i class="power off icon"></i>
-                                    Enable
-                                </button>
-                                @if ($device->deviceStatus->Status == App\Enums\DeviceStatusEnum::RUNNING ||
-                                $device->deviceStatus->Status == App\Enums\DeviceStatusEnum::PENDING)
-                                <span class="tooltip-text !text-sm">Cannot use this function because the device is
-                                    running or on pause</span>
-                                @endif
-                            </form>
-                        </div>
-                        @else
-                        <div class="tooltip-container !float-right">
-                            @can([PermissionsEnum::CAN_DISABLE_DEVICE, PermissionsEnum::ALL_ACCESS_TO_DEVICE])
-                            <form id="disable-form" action="{{ route('device.disable', $device->DeviceID) }}" method="POST">
-                                @csrf
-                                <button id="btnDisable" data-id="{{ $device->DeviceID }}"
-                                    class="ui small compact labeled icon button float-right !mt-2" {{
-                                    ($device->deviceStatus->Status
-                                    == App\Enums\DeviceStatusEnum::RUNNING ||
-                                    $device->deviceStatus->Status == App\Enums\DeviceStatusEnum::PENDING ||
-                                    $device->deviceStatus->Status == App\Enums\DeviceStatusEnum::PAUSE ||
-                                    $device->deviceStatus->Status == App\Enums\DeviceStatusEnum::STARTFREE) ? 'disabled' : ''
-                                    }}>
-                                    <i class="power off icon"></i>
-                                    Disable
-                                </button>
-                                @if ($device->deviceStatus->Status == App\Enums\DeviceStatusEnum::RUNNING ||
-                                $device->deviceStatus->Status == App\Enums\DeviceStatusEnum::PENDING ||
-                                $device->deviceStatus->Status == App\Enums\DeviceStatusEnum::PAUSE ||
-                                $device->deviceStatus->Status == App\Enums\DeviceStatusEnum::STARTFREE)
-                                <span class="tooltip-text !text-sm">Cannot use this function because the device is
-                                    running or on pause</span>
-                                @endif
-                            </form>
-                            @endcan
-                        </div>
-                        @endif
-                        @endif
-        
-                        @can([PermissionsEnum::CAN_DELETE_DEVICE, PermissionsEnum::ALL_ACCESS_TO_DEVICE])
-                        <div class="tooltip-container !float-right">
-                            <button id="btnDeleteDevice" data-id="{{ $device->DeviceID }}"
-                                class="ui red small compact labeled icon button float-right !mt-2" {{
-                                ($device->deviceStatus->Status
-                                ==
-                                App\Enums\DeviceStatusEnum::RUNNING ||
-                                $device->deviceStatus->Status == App\Enums\DeviceStatusEnum::PAUSE ||
-                                $device->deviceStatus->Status == App\Enums\DeviceStatusEnum::STARTFREE) ? 'disabled' : '' }}>
-                                <i class="trash alternate icon"></i>
-                                Delete
-                            </button>
-                            @if ($device->deviceStatus->Status == App\Enums\DeviceStatusEnum::RUNNING ||
-                            $device->deviceStatus->Status == App\Enums\DeviceStatusEnum::PAUSE ||
-                            $device->deviceStatus->Status == App\Enums\DeviceStatusEnum::STARTFREE)
-                            <span class="tooltip-text !text-sm">Cannot use this function because the device is running or on
-                                pause</span>
-                            @endif
-                        </div>
-                        @endcan
-        
-                        @if ($device->deviceStatus->Status != App\Enums\DeviceStatusEnum::DISABLED)
-                        @can([PermissionsEnum::CAN_TRIGGER_FREE_LIGHT, PermissionsEnum::ALL_ACCESS_TO_DEVICE])
-                        <div class="tooltip-container !float-right">
-                            <button id="btnFreeLight" data-id="{{ $device->DeviceID }}"
-                                class="ui {{ $device->deviceStatus->Status == App\Enums\DeviceStatusEnum::STARTFREE ? 'red' : 'green' }} small compact labeled icon button float-right !mt-2"
-                                {{ ($device->deviceStatus->Status ==
-                                App\Enums\DeviceStatusEnum::RUNNING ||
-                                $device->deviceStatus->Status == App\Enums\DeviceStatusEnum::PAUSE ||
-                                $device->deviceStatus->Status == App\Enums\DeviceStatusEnum::PENDING) ? 'disabled' : '' }}>
-                                <i class="lightbulb icon"></i>
-                                {{ $device->deviceStatus->Status == App\Enums\DeviceStatusEnum::STARTFREE ? 'Stop light' : 'Free
-                                light' }}
-                            </button>
-                            @if ($device->deviceStatus->Status == App\Enums\DeviceStatusEnum::RUNNING ||
-                            $device->deviceStatus->Status == App\Enums\DeviceStatusEnum::PAUSE)
-                            <span class="tooltip-text !text-sm">Cannot use this function because the device is running or on
-                                pause</span>
-                            @endif
-                        </div>
-                        @endcan
-                        @endif
-        
-                        @if ($device->deviceStatus->Status != App\Enums\DeviceStatusEnum::DISABLED)
-                        <div class="tooltip-container !float-right">
-                            <button id="btnTestLight" data-id="{{ $device->DeviceID }}"
-                                class="ui orange small compact labeled icon button float-right !mt-2" {{
-                                ($device->deviceStatus->Status ==
-                                App\Enums\DeviceStatusEnum::RUNNING ||
-                                $device->deviceStatus->Status == App\Enums\DeviceStatusEnum::PAUSE||
-                                $device->deviceStatus->Status == App\Enums\DeviceStatusEnum::STARTFREE) ? 'disabled' : '' }}>
-                                <i class="zhihu icon"></i>
-                                Test light
-                            </button>
-                            @if ($device->deviceStatus->Status == App\Enums\DeviceStatusEnum::RUNNING ||
-                            $device->deviceStatus->Status == App\Enums\DeviceStatusEnum::PAUSE||
-                            $device->deviceStatus->Status == App\Enums\DeviceStatusEnum::STARTFREE)
-                            <span class="tooltip-text !text-sm">Cannot use this function because the device is
-                                running or on pause</span>
-                            @endif
-                        </div>
-                        @endif
                     </div>
+
+
+                    <!-- Hidden input and save button -->
+                    <div class="ui input flex items-center mt-2 w-1/2 !hidden" id="editDeviceNameSection">
+                        <input type="text" id="deviceNameInput" class="ui small input !mr-2"
+                            value="{{ $device->ExternalDeviceName }}">
+                        <button class="ui small blue button ml-2" id="saveDeviceNameButton">Save</button>
+                    </div>
+
+                    <span class="text-sm text-gray-500 mt-2 ml-1">{{ $device->deviceStatus->Status }}</span>
                 </div>
+            </div>
+            <div class="column">
+                <div class="flex flex-col justify-center h-full w-full">
+                    <span class="text-sm text-gray-500">Added date: {{ $device->created_at->format('m/d/Y') }}</span>
+                    <span class="text-sm text-gray-500 mt-1">Operation date: {{ $device->OperationDate ?
+                        $device->OperationDate->format('m/d/Y') : 'N/A' }}</span>
+                    <span class="text-sm text-gray-500 mt-1">IP Address: {{ $device->IPAddress ? $device->IPAddress :
+                        'N/A' }}</span>
+                </div>
+            </div>
+            <div class="column">
+                @if($device->deviceStatus->Status == App\Enums\DeviceStatusEnum::PENDING)
+                @can([PermissionsEnum::CAN_DEPLOY_DEVICE, PermissionsEnum::ALL_ACCESS_TO_DEVICE])
+                <form action="{{ route('device.deploy', $device->DeviceID) }}" method="POST" class="!float-right">
+                    @csrf
+                    <button type="submit" id="btnDeploy"
+                        class="ui green small compact labeled icon button float-right !mt-2" @if(empty($baseTime) ||
+                        $deviceTimes->isEmpty()) disabled @endif>
+                        <i class="rocket icon"></i>
+                        Deploy
+                    </button>
+                </form>
+                @endcan
+                @else
+                @if ($device->deviceStatus->Status == App\Enums\DeviceStatusEnum::DISABLED)
+                <div class="tooltip-container !float-right">
+                    <form id="enable-form" action="{{ route('device.enable', $device->DeviceID) }}" method="POST">
+                        @csrf
+                        <button id="btnEnable" data-id="{{ $device->DeviceID }}"
+                            class="ui green small compact labeled icon button float-right !mt-2">
+                            <i class="power off icon"></i>
+                            Enable
+                        </button>
+                        @if ($device->deviceStatus->Status == App\Enums\DeviceStatusEnum::RUNNING ||
+                        $device->deviceStatus->Status == App\Enums\DeviceStatusEnum::PENDING)
+                        <span class="tooltip-text !text-sm">Cannot use this function because the device is
+                            running or on pause</span>
+                        @endif
+                    </form>
+                </div>
+                @else
+                <div class="tooltip-container !float-right">
+                    @can([PermissionsEnum::CAN_DISABLE_DEVICE, PermissionsEnum::ALL_ACCESS_TO_DEVICE])
+                    <form id="disable-form" action="{{ route('device.disable', $device->DeviceID) }}" method="POST">
+                        @csrf
+                        <button id="btnDisable" data-id="{{ $device->DeviceID }}"
+                            class="ui small compact labeled icon button float-right !mt-2" {{
+                            ($device->deviceStatus->Status
+                            == App\Enums\DeviceStatusEnum::RUNNING ||
+                            $device->deviceStatus->Status == App\Enums\DeviceStatusEnum::PENDING ||
+                            $device->deviceStatus->Status == App\Enums\DeviceStatusEnum::PAUSE ||
+                            $device->deviceStatus->Status == App\Enums\DeviceStatusEnum::STARTFREE) ? 'disabled' : ''
+                            }}>
+                            <i class="power off icon"></i>
+                            Disable
+                        </button>
+                        @if ($device->deviceStatus->Status == App\Enums\DeviceStatusEnum::RUNNING ||
+                        $device->deviceStatus->Status == App\Enums\DeviceStatusEnum::PENDING ||
+                        $device->deviceStatus->Status == App\Enums\DeviceStatusEnum::PAUSE ||
+                        $device->deviceStatus->Status == App\Enums\DeviceStatusEnum::STARTFREE)
+                        <span class="tooltip-text !text-sm">Cannot use this function because the device is
+                            running or on pause</span>
+                        @endif
+                    </form>
+                    @endcan
+                </div>
+                @endif
+                @endif
+
+                @can([PermissionsEnum::CAN_DELETE_DEVICE, PermissionsEnum::ALL_ACCESS_TO_DEVICE])
+                <div class="tooltip-container !float-right">
+                    <button id="btnDeleteDevice" data-id="{{ $device->DeviceID }}"
+                        class="ui red small compact labeled icon button float-right !mt-2" {{
+                        ($device->deviceStatus->Status
+                        ==
+                        App\Enums\DeviceStatusEnum::RUNNING ||
+                        $device->deviceStatus->Status == App\Enums\DeviceStatusEnum::PAUSE ||
+                        $device->deviceStatus->Status == App\Enums\DeviceStatusEnum::STARTFREE) ? 'disabled' : '' }}>
+                        <i class="trash alternate icon"></i>
+                        Delete
+                    </button>
+                    @if ($device->deviceStatus->Status == App\Enums\DeviceStatusEnum::RUNNING ||
+                    $device->deviceStatus->Status == App\Enums\DeviceStatusEnum::PAUSE ||
+                    $device->deviceStatus->Status == App\Enums\DeviceStatusEnum::STARTFREE)
+                    <span class="tooltip-text !text-sm">Cannot use this function because the device is running or on
+                        pause</span>
+                    @endif
+                </div>
+                @endcan
+
+                @if ($device->deviceStatus->Status != App\Enums\DeviceStatusEnum::DISABLED)
+                @can([PermissionsEnum::CAN_TRIGGER_FREE_LIGHT, PermissionsEnum::ALL_ACCESS_TO_DEVICE])
+                <div class="tooltip-container !float-right">
+                    <button id="btnFreeLight" data-id="{{ $device->DeviceID }}"
+                        class="ui {{ $device->deviceStatus->Status == App\Enums\DeviceStatusEnum::STARTFREE ? 'red' : 'green' }} small compact labeled icon button float-right !mt-2"
+                        {{ ($device->deviceStatus->Status ==
+                        App\Enums\DeviceStatusEnum::RUNNING ||
+                        $device->deviceStatus->Status == App\Enums\DeviceStatusEnum::PAUSE ||
+                        $device->deviceStatus->Status == App\Enums\DeviceStatusEnum::PENDING) ? 'disabled' : '' }}>
+                        <i class="lightbulb icon"></i>
+                        {{ $device->deviceStatus->Status == App\Enums\DeviceStatusEnum::STARTFREE ? 'Stop light' : 'Free
+                        light' }}
+                    </button>
+                    @if ($device->deviceStatus->Status == App\Enums\DeviceStatusEnum::RUNNING ||
+                    $device->deviceStatus->Status == App\Enums\DeviceStatusEnum::PAUSE)
+                    <span class="tooltip-text !text-sm">Cannot use this function because the device is running or on
+                        pause</span>
+                    @endif
+                </div>
+                @endcan
+                @endif
+
+                @if ($device->deviceStatus->Status != App\Enums\DeviceStatusEnum::DISABLED)
+                <div class="tooltip-container !float-right">
+                    <button id="btnTestLight" data-id="{{ $device->DeviceID }}"
+                        class="ui orange small compact labeled icon button float-right !mt-2" {{
+                        ($device->deviceStatus->Status ==
+                        App\Enums\DeviceStatusEnum::RUNNING ||
+                        $device->deviceStatus->Status == App\Enums\DeviceStatusEnum::PAUSE||
+                        $device->deviceStatus->Status == App\Enums\DeviceStatusEnum::STARTFREE) ? 'disabled' : '' }}>
+                        <i class="zhihu icon"></i>
+                        Test light
+                    </button>
+                    @if ($device->deviceStatus->Status == App\Enums\DeviceStatusEnum::RUNNING ||
+                    $device->deviceStatus->Status == App\Enums\DeviceStatusEnum::PAUSE||
+                    $device->deviceStatus->Status == App\Enums\DeviceStatusEnum::STARTFREE)
+                    <span class="tooltip-text !text-sm">Cannot use this function because the device is
+                        running or on pause</span>
+                    @endif
+                </div>
+                @endif
             </div>
         </div>
         @if($device->deviceStatus->Status == App\Enums\DeviceStatusEnum::PENDING)
@@ -511,12 +508,9 @@ use App\Enums\PermissionsEnum;
                 </div>
 
                 <div class="text-center">
-                    <h3 id="chartTitle" class="!text-base !mb-1">Monthly Rate and Usage</h3>
-                    <p id="chartSubtitle" class="text-muted text-gray-400 text-sm">For the current year of {{ date('Y') }}</p>
-                    {{-- <canvas id="rateChart" width="400" height="160"></canvas> --}}
-                    <div class="relative w-full h-96">
-                        <canvas id="rateChart"></canvas>
-                    </div>
+                    <h3 id="chartTitle">Monthly Rate and Usage</h3>
+                    <p id="chartSubtitle" class="text-muted text-gray-400">For the current year of {{ date('Y') }}</p>
+                    <canvas id="rateChart" width="400" height="160"></canvas>
                 </div>
             </div>
 
@@ -528,7 +522,7 @@ use App\Enums\PermissionsEnum;
         <div class="ui divider"></div>
         <div class="row">
             <div class="column">
-                <h5 class="ui header !text-base">Time Transactions for {{ \Carbon\Carbon::today()->subDays(1)->format('F j, Y') }}
+                <h5 class="ui header">Time Transactions for {{ \Carbon\Carbon::today()->subDays(1)->format('F j, Y') }}
                     to {{ \Carbon\Carbon::today()->format('F j, Y') }}
                 </h5>
             </div>
@@ -545,7 +539,7 @@ use App\Enums\PermissionsEnum;
             </div>
         </div>
 
-        {{-- <div id="tblDetailed" class="row !hidden">
+        <div id="tblDetailed" class="row !hidden">
             <div class="column">
                 <div id="deviceTblcontainer" class="ui celled table-container max-h-[500px] overflow-y-auto">
                     <table class="ui celled table w-full">
@@ -689,75 +683,9 @@ use App\Enums\PermissionsEnum;
                     </table>
                 </div>
             </div>
-        </div> --}}
-
-        <div id="tblDetailed" class="row !hidden">
-            <div class="column">
-                <div id="deviceTblcontainer" class="ui celled table-container max-h-[500px] overflow-y-auto">
-                    <table class="ui celled table w-full">
-                        <tbody>
-                            @php
-                            $totalRate = 0;
-                            $totalDuration = 0;
-                            $footertotalDuration = 0;
-                            @endphp
-                            @foreach($rptDeviceTimeTransactions as $transaction)
-                            @php
-                            // Calculate totals and determine the creator name as per your existing logic
-                            if ($transaction->TransactionType == 'End') {
-                                $totalRate += $transaction->Rate;
-                                $totalDuration = $transaction->Duration;
-                            }
-                            if ($transaction->TransactionType == 'Start' || $transaction->TransactionType == 'Extend') {
-                                $footertotalDuration += $transaction->Duration;
-                            }
-                            $creatorName = $transaction->CreatedByUserId === 999999 ? 'Device' : ($transaction->creator ? $transaction->creator->FirstName . ' ' . $transaction->creator->LastName : 'N/A');
-                            @endphp
-                    
-                            <!-- Mobile-Friendly Row -->
-                            <tr class="md:hidden">
-                                <td colspan="7" class="p-4">
-                                    <div class="flex flex-col space-y-2 text-sm">
-                                        <div>
-                                            <span class="font-bold">Device: </span><span class="font-normal">{{ $transaction->device ? $transaction->device->ExternalDeviceName : 'N/A' }}</span>
-                                        </div>
-                                        <div>
-                                            <span class="font-bold">Transaction: </span><span class="font-normal">{{ $transaction->TransactionType }}</span>
-                                        </div>
-                                        @if ($transaction->TransactionType == 'Start' && ($transaction->IsOpenTime == 1 || $transaction->IsOpenTime == 0))
-                                            <div>
-                                                <span class="font-bold">Open time? </span><span class="font-normal">{{ $transaction->TransactionType == 'Start' ? ($transaction->IsOpenTime == 1 ? 'Yes' : 'No') : 'N/A' }}</span>
-                                            </div>
-                                        @endif
-                                        <div>
-                                            <span class="font-bold">Time: </span><span class="font-normal">{{ $transaction->Time->format('F d, Y h:i:s A') }}</span>
-                                        </div>
-                                        <div>
-                                            <span class="font-bold">Duration: </span><span class="font-normal">{{ convertSecondsToTimeFormat($transaction->Duration) }}</span>
-                                        </div>
-                                        <div>
-                                            <span class="font-bold">Rate: </span><span class="font-normal">PHP {{ number_format($transaction->Rate, 2) }}</span>
-                                        </div>
-                                        <div>
-                                            <span class="font-bold">Triggered By: </span><span class="font-normal">{{ $creatorName }}</span>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                        <tfoot class="sticky bottom-0 bg-white !font-bold text-sm">
-                            <tr class="!font-bold bg-cyan-100 h-auto">
-                                <td colspan="4" class="!font-bold">Overall Duration: {{ convertSecondsToTimeFormat($footertotalDuration) }}</td>
-                                <td colspan="4" class="!font-bold">Overall Rate: PHP {{ number_format($totalRate, 2) }}</td>
-                            </tr>
-                        </tfoot>
-                    </table>                    
-                </div>
-            </div>
         </div>
 
-        {{-- <div id="tblOverview" class="row !block">
+        <div id="tblOverview" class="row !block">
             <div class="column">
                 <div id="newTableContainer" class="ui celled table-container max-h-[500px] overflow-y-auto">
                     <table class="ui celled table" id="gameSessionsTable">
@@ -856,113 +784,6 @@ use App\Enums\PermissionsEnum;
                                 <td colspan="4" class="!font-bold">Overall Duration and Rate Total</td>
                                 <td class="!font-bold">{{ convertSecondsToTimeFormat($totalDuration) }}</td>
                                 <td colspan="3" class="!font-bold">PHP {{ number_format($totalRate, 2) }}</td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
-            </div>
-        </div> --}}
-
-
-        <div id="tblOverview" class="row !block">
-            <div class="column">
-                <div id="newTableContainer" class="ui celled table-container max-h-[500px] overflow-y-auto">
-                    <table class="ui celled table" id="gameSessionsTable">
-                        <tbody>
-                            @php
-                            $sessions = []; // Array to store sessions
-                            $sessionMap = []; // Map to track the last session ID for each device
-
-                            // Iterate through transactions and group by DeviceID
-                            foreach ($rptDeviceTimeTransactions->sortBy('TransactionID') as $transaction) {
-                            $deviceId = $transaction->DeviceID; // Group by DeviceID
-                            $deviceName = $transaction->device ? $transaction->device->ExternalDeviceName : 'N/A';
-
-                            // Handle Start transaction
-                            if ($transaction->TransactionType == 'Start') {
-                            $sessionId = $transaction->DeviceTimeTransactionsID;
-                            $sessionMap[$deviceId] = $sessionId;
-
-                            $sessions[$sessionId] = [
-                            'deviceName' => $deviceName,
-                            'startTime' => $transaction->Time,
-                            'endTime' => null,
-                            'isOpenTime' => $transaction->IsOpenTime,
-                            'totalDuration' => $transaction->Duration,
-                            'totalRate' => $transaction->Rate,
-                            'transactions' => [$transaction],
-                            ];
-                            }
-
-                            // Handle Extend transaction: add the duration and rate to the same session
-                            elseif ($transaction->TransactionType == 'Extend') {
-                            $sessionId = $sessionMap[$deviceId] ?? null;
-                            if ($sessionId && isset($sessions[$sessionId]['startTime']) &&
-                            !isset($sessions[$sessionId]['endTime'])) {
-                            $sessions[$sessionId]['totalDuration'] += $transaction->Duration ?? 0;
-                            $sessions[$sessionId]['totalRate'] += $transaction->Rate ?? 0;
-                            $sessions[$sessionId]['transactions'][] = $transaction;
-                            }
-                            }
-
-                            // Handle End transaction: set the end time for the same session
-                            elseif ($transaction->TransactionType == 'End') {
-                            $sessionId = $sessionMap[$deviceId] ?? null;
-                            if ($sessionId && isset($sessions[$sessionId]['startTime']) &&
-                            !isset($sessions[$sessionId]['endTime'])) {
-                            $sessions[$sessionId]['endTime'] = $transaction->Time;
-                            $sessions[$sessionId]['transactions'][] = $transaction;
-                            }
-                            }
-
-                            // Handle other transaction types
-                            elseif ($transaction->TransactionType == 'Start Free') {}
-                            elseif ($transaction->TransactionType == 'End Free') {}
-                            else {
-                            $sessionId = $sessionMap[$deviceId] ?? null;
-                            if ($sessionId) {
-                            $sessions[$sessionId]['transactions'][] = $transaction;
-                            }
-                            }
-                            }
-                            @endphp
-                            @foreach($sessions as $session)
-                            <tr>
-                                <td colspan="7" class="p-4">
-                                    <div class="flex flex-col space-y-2 text-sm">
-                                        <div>
-                                            <span class="font-bold">Device: </span><span class="font-normal">{{ $session['deviceName'] }}</span>
-                                        </div>
-                                        <div>
-                                            <span class="font-bold">Start Time: </span><span class="font-normal">{{ $session['startTime'] ? $session['startTime']->format('F d, Y h:i:s A') : 'N/A' }}</span>
-                                        </div>
-                                        <div>
-                                            <span class="font-bold">End Time: </span><span class="font-normal">{{ $session['endTime'] ? $session['endTime']->format('F d, Y h:i:s A') : 'N/A' }}</span>
-                                        </div>
-                                        <div>
-                                            <span class="font-bold">Open Time? </span><span class="font-normal">{{ $session['isOpenTime'] === 1 ? 'Yes' : 'No' }}</span>
-                                        </div>
-                                        <div>
-                                            <span class="font-bold">Total Duration: </span><span class="font-normal">{{ convertSecondsToTimeFormat($session['totalDuration'] ?? 0 )}}</span>
-                                        </div>
-                                        <div>
-                                            <span class="font-bold">Total Rate: </span><span class="font-normal"> {{ number_format($session['totalRate'], 2) }}</span>
-                                        </div>
-                                        <div>
-                                            <a href="javascript:void(0);" onclick='showSessionDetailsModal({{ json_encode($session["transactions"]) }})'>
-                                                View Summary
-                                            </a>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                        
-                        <tfoot class="sticky bottom-0 bg-white !font-bold text-sm">
-                            <tr class="!font-bold bg-cyan-100 h-auto">
-                                <td colspan="4" class="!font-bold">Overall Duration: {{ convertSecondsToTimeFormat($totalDuration) }}</td>
-                                <td colspan="4" class="!font-bold">Overall Rate: PHP {{ number_format($totalRate, 2) }}</td>
                             </tr>
                         </tfoot>
                     </table>
@@ -1374,7 +1195,6 @@ use App\Enums\PermissionsEnum;
                 },
                 options: {
                     responsive: true,
-                    maintainAspectRatio: false,
                     scales: {
                         y: {
                             beginAtZero: true,

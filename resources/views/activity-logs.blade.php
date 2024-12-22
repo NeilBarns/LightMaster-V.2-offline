@@ -23,22 +23,6 @@
         </div>
         <div class="row">
             <div class="column">
-                <form action="{{ route('Firebase-StoreData') }}" method="post">
-                    @csrf
-                    <input type="text" name="device_id" placeholder="Enter Device ID" required>
-                    <select name="status">
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
-                    </select>
-                    <button type="submit" id="btnTest" class="ui green small button !text-black">
-                        <i class="plus icon"></i>
-                        Firebase test
-                    </button>
-                </form>                
-            </div>
-        </div>
-        <div class="row">
-            <div class="column">
                 <div id="grdActivityLogs" style="height: 500px; width:100%;" class="ag-theme-alpine"></div>
             </div>
         </div>

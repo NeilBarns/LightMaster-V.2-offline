@@ -4,7 +4,6 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DeviceManagementController;
 use App\Http\Controllers\DeviceMangementController;
 use App\Http\Controllers\DeviceTimeController;
-use App\Http\Controllers\FirebaseController;
 use App\Http\Controllers\LoggingController;
 use App\Http\Controllers\LongPollingController;
 use App\Http\Controllers\ReportsController;
@@ -34,17 +33,11 @@ Route::get('/login', function () {
     return view('login');
 })->name('login');
 
-Route::get('/firebase/get', [FirebaseController::class, 'getData'])->name('Firebase-GetData');
-Route::post('/firebase/set', [FirebaseController::class, 'storeData'])->name('Firebase-StoreData');
-
-
 // PUBLIC APIs - These routes are accessible without authentication
 Route::post('/api/device/insert', [DeviceMangementController::class, 'InsertDeviceDetails'])->name('device.insert');
 Route::post('/api/device/update', [DeviceMangementController::class, 'UpdateDeviceDetails'])->name('device.update');
 Route::delete('/api/device/{id}/delete', [DeviceMangementController::class, 'DeleteDevice'])->name('device.delete');
 Route::get('/api/device/{id}/test', [DeviceMangementController::class, 'DeviceTest'])->name('device.test');
-Route::post('/api/device/heartbeat', [DeviceMangementController::class, 'UpdateHeartbeat'])->name('device.update.heartbeat');
-
 Route::post('/api/device-time/end', [DeviceTimeController::class, 'EndDeviceTimeAPI'])->name('device-time.api.end');
 Route::post('/api/device-time/pause', [DeviceTimeController::class, 'PauseDeviceTimeAPI'])->name('device-time.api.end');
 
@@ -69,13 +62,13 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/device-time/increment/update/{id}', [DeviceTimeController::class, 'UpdateDeviceIncrement'])->name('device-time.increment.update');
     Route::delete('/device-time/increment/delete/{id}', [DeviceTimeController::class, 'DeleteDeviceIncrement'])->name('device-time.increment.delete');
     Route::post('/device-time/increment/status/{id}', [DeviceTimeController::class, 'UpdateDeviceIncrementStatus'])->name('device-time.increment.status');
-    Route::post('/device-time/sync/{id}/{remainingTime}', [DeviceTimeController::class, 'SyncDeviceTime'])->name('device-time.sync');
+
     Route::post('/device-time/base', [DeviceTimeController::class, 'InsertDeviceBase'])->name('device-time.base');
     Route::post('/device-time/open', [DeviceTimeController::class, 'InsertDeviceOpen'])->name('device-time.open');
     Route::post('/device-time/start/rated/{id}', [DeviceTimeController::class, 'StartDeviceRatedTime'])->name('device-time.start.rated');
     Route::post('/device-time/start/open/{id}', [DeviceTimeController::class, 'StartDeviceOpenTime'])->name('device-time.start.open');
-    Route::get('/device-time/end/{id}/{remainingTime}', [DeviceTimeController::class, 'EndDeviceTime'])->name('device-time.end');
-    Route::post('/device-time/pause/{id}/{remainingTime}', [DeviceTimeController::class, 'PauseDeviceTime'])->name('device-time.pause');
+    Route::get('/device-time/end/{id}', [DeviceTimeController::class, 'EndDeviceTime'])->name('device-time.end');
+    Route::post('/device-time/pause/{id}', [DeviceTimeController::class, 'PauseDeviceTime'])->name('device-time.pause');
     Route::post('/device-time/resume/{id}', [DeviceTimeController::class, 'ResumeDeviceTime'])->name('device-time.resume');
     Route::post('/device-time/extend/{id}', [DeviceTimeController::class, 'ExtendDeviceTime'])->name('device-time.extend');
     Route::post('/device/{id}/free', [DeviceTimeController::class, 'FreeLight'])->name('device.free');

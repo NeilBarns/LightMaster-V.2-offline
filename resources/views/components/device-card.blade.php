@@ -7,13 +7,13 @@
 'startTime',
 'endTime',
 'remainingTime',
-'usedTime',
 'remTimeNotif',
 'isOpenTime'])
 
 @php
 use App\Enums\DeviceStatusEnum;
 use App\Enums\PermissionsEnum;
+
 
 $statusClass = '';
 $isDisabled = false;
@@ -52,9 +52,9 @@ break;
 }
 $increments = $device->increments;
 @endphp
-{{-- !h-[350px] !w-[330px] --}}
-<div id="device-card-{{ $device->DeviceID }}" class="ui card !h-[340px] !w-[340px] !mr-6"
-    data-device-id="{{ $device->DeviceID }}" data-remaining-time="{{ $remainingTime }}" data-used-time="{{ $usedTime }}"
+
+<div id="device-card-{{ $device->DeviceID }}" class="ui card !h-[350px] !w-[330px] !mr-6"
+    data-device-id="{{ $device->DeviceID }}" data-remaining-time="{{ $remainingTime }}"
     data-remainingTimeNotif="{{ $device->RemainingTimeNotification }}">
     <div id="device-sync-{{ $device->DeviceID }}"
         class="syncScreen h-full absolute top-0 w-full z-10 justify-center !hidden">
@@ -65,7 +65,7 @@ $increments = $device->increments;
         time</a>
     <div class="content !max-h-72">
         <div class="header mb-2">
-            <span class="text-sm">{{ $device->ExternalDeviceName }}</span>
+            <span class="text-base">{{ $device->ExternalDeviceName }}</span>
             @can([PermissionsEnum::CAN_VIEW_DEVICE_DETAILS, PermissionsEnum::ALL_ACCESS_TO_DEVICE])
             <div class="w-7 h-7 float-right">
                 <form action="{{ route('device.detail', $device->DeviceID) }}" method="get" class="inline">
@@ -78,11 +78,11 @@ $increments = $device->increments;
             @endcan
         </div>
 
-        <a id="device-status-{{ $device->DeviceID }}" class="ui {{ $statusClass }} ribbon label">
+        <a id="device-status-{{ $device->DeviceID }}" class="ui {{ $statusClass }} ribbon label z-50">
             @if ($device->deviceStatus->Status == DeviceStatusEnum::PAUSE)
-                {{ "Paused: " . convertSecondsToTimeFormat($usedTime) . ' used' }}
+            {{ "Paused: " . convertSecondsToTimeFormat($remainingTime) }}
             @else
-                {{ $device->deviceStatus->Status }}
+            {{ $device->deviceStatus->Status }}
             @endif
         </a>
 
@@ -90,40 +90,44 @@ $increments = $device->increments;
         <div class="description">
 
             @if ($isRunning || $isPaused)
-                <p id="lblStartTime-{{ $device->DeviceID }}" class="text-sm">Start time: {{ $startTime ?
-                    convertTo12HourFormat(\Carbon\Carbon::parse($startTime)->format('H:i:s')) :'N/A' }}
-                </p>
+            <p id="lblStartTime-{{ $device->DeviceID }}">Start time: {{ $startTime ?
+                convertTo12HourFormat(\Carbon\Carbon::parse($startTime)->format('H:i:s')) :
+                'N/A' }}</p>
             @else
-            <p id="lblStartTime-{{ $device->DeviceID }}" class="text-sm">Start time: --:--:--</p>
+            <p id="lblStartTime-{{ $device->DeviceID }}">Start time: --:--:--</p>
             @endif
 
             @if ($isRunning || $isPaused)
             @if ($isOpenTime)
-            <p id="lblEndTime-{{ $device->DeviceID }}" class="font-bold text-sm">End time: ∞</p>
+            <p id="lblEndTime-{{ $device->DeviceID }}" class="font-bold">End time: ∞</p>
             @else
-                <p id="lblEndTime-{{ $device->DeviceID }}" class="text-sm">End time: {{ $endTime ?
-                    convertTo12HourFormat(\Carbon\Carbon::parse($endTime)->format('H:i:s'))
-                    : 'N/A'}}
-                </p>
+            <p id="lblEndTime-{{ $device->DeviceID }}">End time: {{ $endTime ?
+                convertTo12HourFormat(\Carbon\Carbon::parse($endTime)->format('H:i:s'))
+                : 'N/A'
+                }}</p>
             @endif
             @else
-                <p id="lblEndTime-{{ $device->DeviceID }}" class="text-sm">End time: --:--:--</p>
+            <p id="lblEndTime-{{ $device->DeviceID }}">End time: --:--:--</p>
             @endif
 
             @if ($isRunning || $isPaused)
             @if ($isOpenTime)
-            <p id="lblTotalTime-{{ $device->DeviceID }}" class="font-bold text-sm">Total time: ∞</p>
+            <p id="lblTotalTime-{{ $device->DeviceID }}" class="font-bold">Total time: ∞</p>
             @else
-                <p id="lblTotalTime-{{ $device->DeviceID }}" class="text-sm">Total time: {{ convertMinutesToHoursAndMinutes($totalTime) }}</p>
+            <p id="lblTotalTime-{{ $device->DeviceID }}">Total time: {{ convertMinutesToHoursAndMinutes($totalTime) }}
+            </p>
             @endif
             @else
-                <p id="lblTotalTime-{{ $device->DeviceID }}" class="text-sm">Total time: 0 hr 0 mins</p>
+            <p id="lblTotalTime-{{ $device->DeviceID }}">Total time: 0 hr 0 mins
+            </p>
             @endif
 
             @if ($isRunning || $isPaused)
-                <p id="lblTotalRate-{{ $device->DeviceID }}" class="text-sm">Total charge/rate: PHP {{ $totalRate }}</p>
+            <p id="lblTotalRate-{{ $device->DeviceID }}">Total charge/rate: PHP {{ $totalRate }}</p>
+            </p>
             @else
-                <p id="lblTotalRate-{{ $device->DeviceID }}" class="text-sm">Total charge/rate: PHP 0.00</p>
+            <p id="lblTotalRate-{{ $device->DeviceID }}">Total charge/rate: PHP 0.00</p>
+            </p>
             @endif
 
             <div class="remaining-time-container" data-device-id="{{ $device->DeviceID }}"
@@ -131,8 +135,7 @@ $increments = $device->increments;
                 data-device-status="{{ strtolower($device->deviceStatus->Status) }}" data-isOpenTime="{{ $isOpenTime }}"
                 data-openTime="{{ $openTime ? $openTime->Time : 0}}"
                 data-openRate="{{ $openTime ? $openTime->Rate : 0}}">
-                <p class="remaining-time text-sm">Remaining time: {{ gmdate('H:i:s', $remainingTime) }}</p>
-                <p class="bare-remaining-time !hidden">{{ $remainingTime }}</p>
+                <p class="remaining-time">Remaining time: {{ gmdate('H:i:s', $remainingTime) }}</p>
             </div>
 
         </div>
@@ -143,12 +146,12 @@ $increments = $device->increments;
                 <div class="column">
                     @can([PermissionsEnum::CAN_CONTROL_DEVICE_TIME, PermissionsEnum::ALL_ACCESS_TO_DEVICE])
                     <button id="btnEndTime"
-                        class="btnEndTime !text-sm ui fluid small button start-time-button red {{ ($isRunning || $isPaused) ? '!block' : '!hidden' }}"
+                        class="ui fluid small button start-time-button red {{ ($isRunning || $isPaused) ? '!block' : '!hidden' }}"
                         data-id="{{ $device->DeviceID }}" {{ ($isDisabled || $isFree) ? 'disabled' : '' }}>
                         End time
                     </button>
                     <div id="startItems"
-                        class="startItems !text-sm ui small floating dropdown labeled icon button {{
+                        class="ui small floating dropdown labeled icon button {{
                         ($isDisabled || $isFree) ? 'disabled' : '' }} {{ ($isRunning || $isPaused) ? '!hidden' : '!block' }}"
                         data-id="{{ $device->DeviceID }}">
                         <i class="dropdown icon"></i>
@@ -186,7 +189,7 @@ $increments = $device->increments;
                     $buttonText = 'Resume';
                     }
                     @endphp
-                    <button class="{{ $buttonClass }} !text-sm" data-id="{{ $device->DeviceID }}" {{ $isButtonDisabled || $isFree
+                    <button class="{{ $buttonClass }}" data-id="{{ $device->DeviceID }}" {{ $isButtonDisabled || $isFree
                         ? 'disabled' : '' }}>
                         {{ $buttonText }}
                     </button>
@@ -199,12 +202,12 @@ $increments = $device->increments;
                 @can([PermissionsEnum::CAN_CONTROL_DEVICE_TIME, PermissionsEnum::ALL_ACCESS_TO_DEVICE])
                 @if ($increments->count() == 1)
                 <button data-id="{{ $device->DeviceID }}" data-time="{{ $increments->first()->Time }}"
-                    data-rate="{{ $increments->first()->Rate }}" class="ui small button extend-time-single-button !text-sm" {{
+                    data-rate="{{ $increments->first()->Rate }}" class="ui small button extend-time-single-button" {{
                     ($isDisabled || !$isRunning || $isOpenTime) ? 'disabled' : '' }}>Extend {{
                     convertMinutesToHoursAndMinutes($increments->first()->Time) }}</button>
                 @elseif ($increments->count() > 1)
                 <div id="extendItems"
-                    class="ui small !text-sm floating dropdown labeled icon button {{ ($isDisabled || !$isRunning || $isOpenTime) ? 'disabled' : '' }}"
+                    class="ui small floating dropdown labeled icon button {{ ($isDisabled || !$isRunning || $isOpenTime) ? 'disabled' : '' }}"
                     data-id="{{ $device->DeviceID }}">
                     <i class="dropdown icon"></i>
                     Extend Time
@@ -227,12 +230,9 @@ $increments = $device->increments;
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const deviceId = "{{ $device->DeviceID }}";
-
         const startButton = document.querySelector('.start-time-button[data-id="{{ $device->DeviceID }}"]');
-        const startTimeCollection = document.querySelector('.startItems[data-id="{{ $device->DeviceID }}"]');
-        // const endButton = document.getElementById('btnEndTime');
-        const endButton = document.querySelector(`.btnEndTime[data-id="${deviceId}"]`);
+        const startTimeCollection = document.getElementById('startItems');
+        const endButton = document.getElementById('btnEndTime');
         const pauseButton = document.querySelector('.pause-time-button[data-id="{{ $device->DeviceID }}"]');
         const singleExtendButton = document.querySelector('.extend-time-single-button[data-id="{{ $device->DeviceID }}"]');
         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
@@ -396,8 +396,7 @@ $increments = $device->increments;
 
                 showLoading();
 
-                const route = action === 'start' ? `/device-time/start/${deviceId}` : `/device-time/end/${deviceId}/0`;
-                showLoading();
+                const route = action === 'start' ? `/device-time/start/${deviceId}` : `/device-time/end/${deviceId}`;
                 fetch(route, {
                     method: 'GET',
                     headers: {
@@ -468,7 +467,6 @@ $increments = $device->increments;
                     if (timingType === 'rated')
                     {
                         const route = `/device-time/start/rated/${deviceId}`;
-                        showLoading();
                         fetch(route, {
                             method: 'POST',
                             headers: {
@@ -485,20 +483,18 @@ $increments = $device->increments;
                             return response.json();
                         })
                         .then(data => {
+                            hideLoading();
                             if (data.success) {
                                 fetchActiveTransactions(); location.reload();
 
-                                const btnEndButton = document.querySelector(`.btnEndTime[data-id="${deviceId}"]`);
-                                const startTimeCollections = document.querySelector(`.startItems[data-id="${deviceId}"]`);
-
-                                if (btnEndButton)
+                                if (endButton)
                                 {
-                                    btnEndButton.classList.remove('!hidden');
-                                    btnEndButton.classList.add('!block');
+                                    endButton.classList.remove('!hidden');
+                                    endButton.classList.add('!block');
                                 }
 
-                                startTimeCollections.classList.add('!hidden');
-                                startTimeCollections.classList.remove('!block');
+                                startTimeCollection.classList.add('!hidden');
+                                startTimeCollection.classList.remove('!block');
 
                                 const extendButtonMenu = document.querySelector(`.dropdown[data-id="${deviceId}"]`);
                                 const extendButton = document.querySelector(`.extend-time-single-button[data-id="${deviceId}"]`);
@@ -521,7 +517,6 @@ $increments = $device->increments;
                             } else {
                                 showToast("Error on device response. Please see logs for more info", 'error');
                             }
-                            hideLoading();
                         })
                         .catch(error => {
                             hideLoading();
@@ -533,7 +528,6 @@ $increments = $device->increments;
                         if (parseInt(baseTime) > 0)
                         {
                             const route = `/device-time/start/open/${deviceId}`;
-                            showLoading();
                             fetch(route, {
                                 method: 'POST',
                                 headers: {
@@ -600,25 +594,10 @@ $increments = $device->increments;
             pauseButton.addEventListener('click', function () {
                 const deviceId = this.getAttribute('data-id');
                 const action = this.textContent.trim().includes('Pause') ? 'pause' : 'continue';
-                let remainingTime = 0;
-
-                const remainingTimeContainer = document.querySelector(`.remaining-time-container[data-device-id="${deviceId}"]`);
-                if (remainingTimeContainer)
-                {
-                    const bareRemainingTimeElement = remainingTimeContainer.querySelector('.bare-remaining-time');
-                    if (bareRemainingTimeElement) {
-                        const bareRemainingTime = bareRemainingTimeElement.textContent;
-                        if (bareRemainingTime)
-                        {
-                            remainingTime = bareRemainingTime;
-                        }
-                        
-                    }
-                }
 
                 showLoading();
 
-                const route = action === 'pause' ? `/device-time/pause/${deviceId}/${remainingTime}` : `/device-time/resume/${deviceId}`;
+                const route = action === 'pause' ? `/device-time/pause/${deviceId}` : `/device-time/resume/${deviceId}`;
 
                 fetch(route, {
                     method: 'POST',
@@ -652,7 +631,7 @@ $increments = $device->increments;
                             if (extendButton) {
                                 extendButton.classList.add('disabled');
                             }
-                            updateStatusRibbon(deviceId, 'Paused: ' + convertSecondsToTimeFormat(data.remaining_time) + ' used');
+                            updateStatusRibbon(deviceId, 'Paused: ' + convertSecondsToTimeFormat(data.remaining_time));
                         }
                         else {
                             fetchActiveTransactions(); location.reload();
@@ -738,24 +717,8 @@ $increments = $device->increments;
 
         $(document).on('click', '.confirm-end-time-button', function () {
             const deviceId = $(this).data('id');
-            let remainingTime = 0;
-            showLoading();
-
-            const remainingTimeContainer = document.querySelector(`.remaining-time-container[data-device-id="${deviceId}"]`);
-            if (remainingTimeContainer)
-            {
-                const bareRemainingTimeElement = remainingTimeContainer.querySelector('.bare-remaining-time');
-                if (bareRemainingTimeElement) {
-                    const bareRemainingTime = bareRemainingTimeElement.textContent;
-                    if (bareRemainingTime)
-                    {
-                        remainingTime = bareRemainingTime; 
-                    }
-                    
-                }
-            }
-
-            const route = `/device-time/end/${deviceId}/${remainingTime}`;
+            
+            const route = `/device-time/end/${deviceId}`;
             showLoading();
             fetch(route, {
                 method: 'GET',
@@ -767,14 +730,14 @@ $increments = $device->increments;
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
+                    fetchActiveTransactions(); location.reload();
                     $(`#endTimeModal-${deviceId}`).modal('hide');
-                    showLoading();
                     const startButton = document.querySelector(`.start-time-button[data-id="${deviceId}"]`);
                     const baseRate = startButton.getAttribute('data-rate');
                     const extendButtonMenu = document.querySelector(`.dropdown[data-id="${deviceId}"]`);
                     const extendButton = document.querySelector(`.extend-time-single-button[data-id="${deviceId}"]`);
                     const pauseButton = document.querySelector(`.pause-time-button[data-id="${deviceId}"]`);
-
+                    
                     if (extendButtonMenu) {
                         extendButtonMenu.classList.add('disabled');
                     }
@@ -788,17 +751,13 @@ $increments = $device->increments;
                         pauseButton.classList.remove('green');
                         pauseButton.textContent = 'Pause time';
                     }
-                    
                     updateStatusRibbon(deviceId, 'Inactive');
-                    fetchActiveTransactions(); 
-                    location.reload();
                     //updateUI(deviceId, data.startTime, data.endTime, data.totalTime, data.totalRate, true);
                 } else {
                     showToast("Error on device response. Please see logs for more info", 'error');
                 }
             })
             .catch(error => {
-                console.log(error);
                 showToast("Possible network error occured. Please see logs for more info", 'error');
             });
             hideLoading();

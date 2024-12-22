@@ -7,7 +7,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <title>{{ config('app.name') }}</title>
-    <link rel="icon" type="image/x-icon" href="{{ asset('imgs/lightmastericon.png') }}">
+    <link rel="icon" type="image/x-icon" href="{{ asset('imgs/lightmaster-icon.png') }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- JQuery -->
     <script src="{{ asset('js/jquery.min.js') }}"></script>
@@ -39,8 +39,6 @@
     <script src="{{ asset('js/jquery.min.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset('css/semantic.min.css') }}">
     <script src="{{ asset('js/semantic.min.js') }}"></script>
-
-    <script src="https://js.pusher.com/8.2/pusher.min.js"></script>
 
 </head>
 
@@ -111,52 +109,6 @@
     </div>
 
     <script>
-
-        document.addEventListener('DOMContentLoaded', function () {
-            const pusher = new Pusher('{{ env('PUSHER_APP_KEY') }}', {
-                cluster: '{{ env('PUSHER_APP_CLUSTER') }}',
-            });
-
-            const channel = pusher.subscribe('devices');
-
-            // Listen for the 'device.updated' event
-            channel.bind('device.updated', function (data) {
-                updateDeviceCard(data.device);
-            });
-
-            function updateDeviceCard(device) {
-                // Locate the card for the specific device
-                const deviceCard = document.querySelector(`[data-device-id="${device.DeviceID}"]`);
-                
-                if (deviceCard) {
-                    // Update the card's content dynamically
-                    const timerElement = deviceCard.querySelector('.remaining-time');
-                    const bareTimerElement = deviceCard.querySelector('.bare-remaining-time');
-                    
-                    const remainingTime = device.RemainingTime; // From API response
-
-                    // Update timer display
-                    if (timerElement && bareTimerElement) {
-                        const hours = Math.floor(remainingTime / 3600);
-                        const minutes = Math.floor((remainingTime % 3600) / 60);
-                        const seconds = remainingTime % 60;
-
-                        timerElement.textContent = `Remaining time: ${hours}h ${minutes}m ${seconds}s`;
-                        bareTimerElement.textContent = `${remainingTime}`;
-                    }
-
-                    // Optionally update other elements like rates, status, etc.
-                    const lblTotalRate = document.getElementById(`lblTotalRate-${device.DeviceID}`);
-                    if (lblTotalRate) {
-                        lblTotalRate.textContent = `Total charge/rate: PHP ${device.TotalRate}.00`;
-                    }
-                } else {
-                    // Optionally append a new card if it doesn't exist
-                    console.log(`Device card for DeviceID ${device.DeviceID} not found.`);
-                }
-            }
-        });
-
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function () {
                 navigator.serviceWorker.register('/service-worker.js').then(function (registration) {

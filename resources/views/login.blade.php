@@ -7,7 +7,7 @@
     @vite( ['resources/css/app.css', 'resources/js/app.js'])
 
     <title>{{ config('app.name') }}</title>
-    <link rel="icon" type="image/x-icon" href="{{ asset('imgs/lightmastericon.png') }}">
+    <link rel="icon" type="image/x-icon" href="{{ asset('imgs/lightmaster-icon.png') }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- JQuery -->
     <script src="{{ asset('js/jquery.min.js') }}"></script>
@@ -45,7 +45,7 @@
     <div class="w-full max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-6"
         style="box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);">
         <div class="flex flex-col justify-center items-center mb-8">
-            <img src="{{ asset('imgs/lightmastericon.png') }}" alt="LightMaster" class="h-20 mb-4">
+            <img src="{{ asset('imgs/lightmaster-icon.png') }}" alt="LightMaster" class="h-20 mb-4">
             <h2 class="text-xl font-semibold text-gray-800">LightMaster</h2>
             <p class="text-gray-600 italic">"Lighting the way, the smart way."</p>
         </div>

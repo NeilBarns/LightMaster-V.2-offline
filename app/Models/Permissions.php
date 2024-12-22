@@ -10,17 +10,15 @@ class Permissions extends Model
 {
     use HasFactory;
 
-    protected $table = 'Permissions';
-
-    public $timestamps = false;
-
-    protected $primaryKey = 'PermissionId';
-
     protected $fillable = [
         'PermissionId',
         'PermissionName',
         'Description'
     ];
+
+    public $timestamps = false;
+
+    protected $primaryKey = 'PermissionId';
 
     public function roles(): BelongsToMany
     {
