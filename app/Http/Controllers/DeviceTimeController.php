@@ -648,7 +648,7 @@ class DeviceTimeController extends Controller
             $transaction = DeviceTimeTransactions::create([
                 'DeviceID' => $device->DeviceID,
                 'TransactionType' => TimeTransactionTypeEnum::PAUSE,
-                'StartTime' => $pauseStartTime,
+                'StartTime' => $officialPauseTime,
                 'Duration' => $remainingTime,
                 'Rate' => 0,
                 'Active' => true,

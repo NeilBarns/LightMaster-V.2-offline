@@ -57,7 +57,7 @@ $increments = $device->increments;
     data-device-id="{{ $device->DeviceID }}" data-remaining-time="{{ $remainingTime }}"
     data-remainingTimeNotif="{{ $device->RemainingTimeNotification }}">
     <div id="device-sync-{{ $device->DeviceID }}"
-        class="syncScreen h-full absolute top-0 w-full z-10 justify-center !hidden">
+        class="syncScreen h-full absolute top-0 w-full z-5 justify-center !hidden">
         <p class=" text-2xl">Syncing...</p>
     </div>
     <a id="notification-banner-{{ $device->DeviceID }}"

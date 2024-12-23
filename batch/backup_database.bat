@@ -1,6 +1,6 @@
 @echo off
 :: Set the path to the backup directory
-set BACKUP_DIR="C:\Users\Neil Michael Barnedo\projects\Automated lights\autolights\database\backup"
+set BACKUP_DIR="C:\xampp\htdocs\autolights\database\backup"
 
 :: Set the date format for the backup file (e.g., 2024-08-23)
 set DATE=%date:~-4%-%date:~4,2%-%date:~7,2%

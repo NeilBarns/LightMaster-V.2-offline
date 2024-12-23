@@ -28,7 +28,7 @@ class DeviceMangementController extends Controller
                 })
                 ->select('Devices.*') // Keep the distinct device columns
                 ->distinct()  // Ensure unique devices
-                ->orderByRaw('CASE WHEN DeviceTimeTransactions.TransactionID IS NOT NULL THEN 0 ELSE 1 END') // Running devices first
+                // ->orderByRaw('CASE WHEN DeviceTimeTransactions.TransactionID IS NOT NULL THEN 0 ELSE 1 END') // Running devices first
                 ->orderBy('Devices.ExternalDeviceName') // Then sort by name
                 ->get();
 

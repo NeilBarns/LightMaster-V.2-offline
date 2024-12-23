@@ -90,6 +90,12 @@ $randomGreeting = $greetings[array_rand($greetings)];
         \App\Enums\TimeTransactionTypeEnum::PAUSE])
         ->get();
 
+        $resume = \App\Models\DeviceTimeTransactions::where('DeviceID', $device->DeviceID)
+        ->where('Active', true)
+        ->whereIn('TransactionType', [\App\Enums\TimeTransactionTypeEnum::RESUME])
+        ->orderBy('TransactionID', 'desc')
+        ->first();
+
 
         if ($activeTransactions->isNotEmpty()) {
         $totalTime = $activeTransactions
@@ -103,9 +109,13 @@ $randomGreeting = $greetings[array_rand($greetings)];
         \App\Enums\TimeTransactionTypeEnum::START)->first();
         $startTime = $startTransaction ? $startTransaction->StartTime : null;
 
-        $isOpenTime = $startTransaction->IsOpenTime;
-        $isPause = $activeTransactions->where('TransactionType',
-        \App\Enums\TimeTransactionTypeEnum::PAUSE)->first();
+        $isOpenTime = $startTransaction ? $startTransaction->IsOpenTime : 0;
+        $isPause = \App\Models\DeviceTimeTransactions::where('DeviceID', $device->DeviceID)
+        ->where('Active', true)
+        ->whereIn('TransactionType', [\App\Enums\TimeTransactionTypeEnum::PAUSE])
+        ->orderBy('TransactionID', 'desc')
+        ->first();
+        
 
         // Calculate end time based on start time and total time
         if ($startTime) {
@@ -117,6 +127,7 @@ $randomGreeting = $greetings[array_rand($greetings)];
         if ($isPause)
         {
         $remainingTime = $isPause->Duration;
+        $remainingTime = $startTime->diffInSeconds(\Carbon\Carbon::now(), false);
         }
         else {
         $remainingTime = $startTime->diffInSeconds(\Carbon\Carbon::now(), false);
@@ -125,7 +136,25 @@ $randomGreeting = $greetings[array_rand($greetings)];
         else {
         if ($isPause)
         {
-        $remainingTime = $isPause->Duration;
+            if ($resume)
+            {
+                if ($resume->StartTime > $isPause->StartTime)
+                {
+                    $extensions = \App\Models\DeviceTimeTransactions::where('DeviceID', $device->DeviceID)
+                    ->where('Active', true)
+                    ->whereIn('TransactionType', [\App\Enums\TimeTransactionTypeEnum::EXTEND])
+                    ->sum('Duration');
+                    $elapsedTime = ($totalTime * 60) - $isPause->Duration;
+                    $endTime = $resume->StartTime->addSeconds($isPause->Duration)->addSeconds($extensions);
+                    $remainingTime = \Carbon\Carbon::now()->diffInSeconds($endTime, false);
+                }
+                else {
+                    $remainingTime = $isPause->Duration;
+                }
+            }
+            else {
+                $remainingTime = $isPause->Duration;
+            }
         }
         else {
         if ($endTime) {
