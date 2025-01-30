@@ -15,6 +15,7 @@ class VerifyCsrfToken extends Middleware
         '/api/device/insert',
         '/api/device-time/end',
         '/api/device/update',
-        '/api/device-time/pause'
+        '/api/device/response/delete',
+        '/api/device/heartbeat'
     ];
 }

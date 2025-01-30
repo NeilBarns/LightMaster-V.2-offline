@@ -31,14 +31,13 @@
         if (deleteRoleButton) {
             deleteRoleButton.addEventListener('click', function() {
                 deleteId = this.getAttribute('data-id');
-                console.log('deleteId', deleteId);
                 $(deleteRoleConfirmationModal).modal('show');
             });
         }
 
         confirmDeleteButton.addEventListener('click', function () {
             $(deleteRoleConfirmationModal).modal('hide');
-            showLoading();
+            ShowLoading();
             fetch('/role/delete/' + deleteId, {
                 method: 'DELETE',
                 headers: {
@@ -49,16 +48,16 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    hideLoading();
+                    HideLoading();
                    sessionStorage.setItem('toastMessage', JSON.stringify({message: 'Role deleted successfully!', type: 'success'}));
                    window.location.href = '{{ route('manage-roles') }}'
                 } else {
-                    hideLoading();
+                    HideLoading();
                     showToast('Failed to delete role.', 'error');
                 }
             })
             .catch(error => {
-                hideLoading();
+                HideLoading();
                 showToast('Error: ' + error.message, 'error');
             });
         });

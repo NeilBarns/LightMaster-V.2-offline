@@ -7,6 +7,8 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <title>{{ config('app.name') }}</title>
+    {{-- <meta name="websocket-url" content="{{ config('app.websocket') }}"> --}}
+
     <link rel="icon" type="image/x-icon" href="{{ asset('imgs/lightmaster-icon.png') }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- JQuery -->
@@ -34,25 +36,87 @@
 
     <!-- Chart.js  -->
     <script src="{{ asset('js/chart.js') }}"></script>
+    <script>
+        const WEBSOCKET_URL = "{{ config('app.websocket') }}";
+    </script>
+    <script src="{{ asset('js/functions/websocketHandler.js') }}" defer></script>
 
     <!-- Fomantic IU -->
     <script src="{{ asset('js/jquery.min.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset('css/semantic.min.css') }}">
     <script src="{{ asset('js/semantic.min.js') }}"></script>
+   
+    <script>
+        const TimeTransactionTypeEnum = {};
+        @foreach (App\Enums\TimeTransactionTypeEnum::cases() as $case)
+            TimeTransactionTypeEnum['{{ $case['name'] }}'] = '{{ $case['value'] }}';
+        @endforeach
+        window.TimeTransactionTypeEnum = TimeTransactionTypeEnum;
+    </script>
+   
+   <script>
+        const DeviceStatusEnum = {};
+        @foreach (App\Enums\DeviceStatusEnum::cases() as $case)
+            DeviceStatusEnum['{{ $case['name'] }}'] = '{{ $case['value'] }}';
+        @endforeach
+        window.DeviceStatusEnum = DeviceStatusEnum;
 
+        window.cache = {
+            intervalIds: {}
+        };
+    </script>
+
+    <script>
+        const DeviceHeartbeatStatusEnum = {};
+        @foreach (App\Enums\DeviceHeartbeatStatusEnum::cases() as $case)
+            DeviceHeartbeatStatusEnum['{{ $case['name'] }}'] = '{{ $case['value'] }}';
+        @endforeach
+        window.DeviceHeartbeatStatusEnum = DeviceHeartbeatStatusEnum;
+    </script>
+    
+    <script defer src="{{ asset('js/functions/LocalStorageFunctions.js') }}"></script>
+    <script defer src="{{ asset('js/functions/Enums.js') }}"></script>
+    <script defer src="{{ asset('js/functions/CommonFunctions.js') }}"></script>
+    <script defer src="{{ asset('js/functions/DeviceElementFunctions.js') }}"></script>
+    <script defer src="{{ asset('js/functions/DateTimeUtilFunctions.js') }}"></script>
+    <script defer src="{{ asset('js/functions/NumberUtilFunctions.js') }}"></script>
+    <script defer src="{{ asset('js/code_behinds/device-card.js') }}"></script>
+    <script defer src="{{ asset('js/code_behinds/device-detail.js') }}"></script>
+    <script defer src="{{ asset('js/code_behinds/financial-reports.js') }}"></script>
+    <script defer src="{{ asset('js/DAO/DAOHelper.js') }}"></script>
+    <script defer src="{{ asset('js/DAO/DeviceDAO.js') }}"></script>
+    <script defer src="{{ asset('js/DAO/DeviceTimeDAO.js') }}"></script>
+    <script defer src="{{ asset('js/DAO/DeviceTimeTransactionsDAO.js') }}"></script>
+    <script defer src="{{ asset('js/Handlers/DeviceTimeTransactionHandler.js') }}"></script>
+    <script defer src="{{ asset('js/Handlers/DeviceHeartbeatHandler.js') }}"></script>
+    <script defer src="{{ asset('js/Handlers/DeviceTimeControlOnLoadHandler.js') }}"></script>
+    <script defer src="{{ asset('js/Handlers/DeviceRateAndUsageReportHandler.js') }}"></script>
+    <script defer src="{{ asset('js/Handlers/DeviceOverviewTimeTransactionsReportHandler.js') }}"></script>
+    <script defer src="{{ asset('js/Handlers/DeviceOverviewTimeTransactionsReportExportHandler.js') }}"></script>
+    <script defer src="{{ asset('js/Handlers/DeviceDetailedTimeTransactionsReportHandler.js') }}"></script>
+    <script defer src="{{ asset('js/Handlers/DeviceDetailedTimeTransactionsReportHandlerExport.js') }}"></script>
+    <script defer src="{{ asset('js/Handlers/NotificationsHandler.js') }}"></script>
 </head>
 
 <body id="bdy" class="antialiased">
+    <audio id="notificationSound" src="{{ asset('sounds/notification1.mp3') }}"></audio>
     <div class="toast-container" id="toastContainer"></div>
     <div id="loadingScreen" style="">
-        <img src="{{ asset('imgs/loading.gif') }}" alt="Loading...">
+        <img src="{{ asset('imgs/fire-loading.gif') }}" alt="Loading...">
     </div>
-    <div class="flex flex-row h-full">
-        <div class="grow-0 w-72 min-w-72 h-full">
+    <div class="relative flex flex-row h-full">
+        <div id='side-nav' class="grow-0 w-96 h-full transition-all duration-300 shadow-md shadow-gray-400">
             <x-side-nav />
         </div>
-        <div class="grow h-full">
-            <div class="flex flex-col grow-0 h-full">
+        <div id="sidebar-show-pane" class="relative w-5 !bg-[#FFECAE] shadow-md shadow-gray-400 hidden">
+            <button id="sidebar-show-toggle" class="absolute w-8 top-4 text-white p-1 rounded-full shadow-md !bg-[#FFECAE] hover:bg-gray-400 hover:shadow-lg transition-all duration-300">
+                <img src="{{ asset('imgs/arrow-right-s-line.png') }}" alt="Bell icon" 
+                            class="w-6 h-6 !block">
+            </button>
+        </div>
+        <div id="main-container" class="flex flex-row grow-0 h-full w-full transition-all duration-300">
+            <!-- Main Content -->
+            <div id="main-content" class="flex flex-col grow-0 h-full w-full transition-all duration-300">
                 <div class="grow-0 flex flex-row h-16 min-h-16 shadow-md bg-white">
                     <form id="logout-form" action="{{ route('auth.logout') }}" method="POST" style="display: none;">
                         @csrf
@@ -63,21 +127,17 @@
                             @show
                         </div>
                     </div>
-                    <div class="basis-1/2 flex items-center justify-end px-4">
+                    <div class="basis-1/2 flex items-center justify-end px-1">
                         <div class="relative inline-block text-left">
                             <button id="user-menu-button" class="flex items-center focus:outline-none">
                                 <img src="{{ asset('imgs/people.png') }}" alt="User Image" class="w-8 h-8 rounded-full">
-                                <span class="ml-2 text-sm font-medium text-gray-700">{{ auth()->user()->FirstName }} {{
-                                    auth()->user()->LastName }}</span>
-                                <svg class="w-4 h-4 ml-1 text-gray-700" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M19 9l-7 7-7-7"></path>
-                                </svg>
                             </button>
                             <div id="user-menu" style="z-index: 1000 !important"
                                 class="hidden origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
                                 <div class="py-1">
+                                    <span class="block px-4 py-2 pb-0 text-sm text-gray-700">{{ auth()->user()->FirstName }} {{
+                                        auth()->user()->LastName }}</span>
+                                    <div class="ui divider"></div>
                                     <a href="{{ route('profile', ['userId' => auth()->user()->UserID]) }}"
                                         class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
                                     <a href="#"
@@ -87,8 +147,17 @@
                             </div>
                         </div>
                     </div>
+                    <div class="flex items-center justify-end px-4">
+                        <button id="notification-button" class="flex items-center focus:outline-none {{ isset($notifications) && $notifications->isNotEmpty() ? '' : '!hidden' }}">
+                            <img src="{{ asset('imgs/notification-default.png') }}" alt="Bell icon" 
+                            class="btnShowNotificationButton w-8 h-8 !block"
+                            data-no-new-notif="{{ asset('imgs/notification-default.png') }}" 
+                            data-has-new-notif="{{ asset('imgs/notification-has-new.png') }}">
+                            <img src="{{ asset('imgs/close.png') }}" alt="Bell icon" class="btnCloseNotificationButton w-8 h-8 !hidden">
+                        </button>
+                    </div>
                 </div>
-                <div class="h-[92%] overflow-y-hidden">
+                <div class="h-full overflow-y-hidden">
                     @yield('content')
                     <script>
                         $(document).ready(function() {
@@ -105,10 +174,156 @@
                     </script>
                 </div>
             </div>
+        
+            <!-- Notifications List -->
+            <div id="notification-list" class="flex flex-col h-full w-0 shadow-2xl bg-white transition-all duration-300">
+                <div class="flex items-center px-4 text-sm font-bold shadow-md">
+                    <div class="grow-0 flex flex-row h-16 min-h-16">
+                        <div class="basis-1/2">
+                            <div class="flex items-center px-4 h-full text-sm font-bold">
+                                Notifications
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="notification-list h-full overflow-y-auto p-5 relative">
+                    @isset($notifications)
+                    @foreach ($notifications as $notification)
+                        <x-notification-card :notification="$notification" />
+                    @endforeach
+                    @endisset
+                </div>
+            </div>
         </div>
+        
     </div>
-
     <script>
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const sideNav = document.getElementById('side-nav');
+            const sidebarHideToggleButton = document.getElementById('sidebar-hide-toggle');
+            const sidebarShowToggleButton = document.getElementById('sidebar-show-toggle');
+            const sidebarShowPane = document.getElementById('sidebar-show-pane');
+
+            const sideBarSavedState = getSideBarLocalStorageValue();
+
+            if (sideBarSavedState === 'hidden')
+            {
+                hideSideBar();
+            }
+            else if (sideBarSavedState === 'shown')
+            {
+                showSideBar();
+            }
+
+            sidebarHideToggleButton.addEventListener('click', function () {
+                
+                hideSideBar();
+                setSideBarLocalStorateValue('hidden');
+            });
+
+            sidebarShowToggleButton.addEventListener('click', function () {
+                
+                showSideBar();
+                setSideBarLocalStorateValue('shown');
+            });
+
+            function hideSideBar()
+            {
+                sideNav.classList.add('absolute');
+                sideNav.classList.add('-left-96');
+                sidebarHideToggleButton.style.left = '0.5rem';
+                
+                sidebarShowPane.classList.remove('hidden');
+                sidebarShowPane.classList.add('block');
+            }
+
+            function showSideBar()
+            {
+                sideNav.classList.remove('absolute');
+                sideNav.classList.remove('-left-96');
+                sidebarHideToggleButton.style.left = '16rem';
+                sidebarShowPane.classList.add('hidden');
+                sidebarShowPane.classList.remove('block');
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const notificationButton = getNotificationButton();
+            const notificationImage = getNotificationImage();
+            const mainContent = document.getElementById('main-content');
+            const notificationList = document.getElementById('notification-list');
+            const btnShowNotificationButton = document.querySelector('.btnShowNotificationButton');
+            const btnCloseNotificationButton = document.querySelector('.btnCloseNotificationButton');
+
+            notificationButton.addEventListener('click', () => {
+                if (notificationList.classList.contains('w-[25%]')) 
+                {
+                    notificationList.classList.remove('w-[25%]');
+                    notificationList.classList.add('w-0');
+
+                    mainContent.classList.remove('w-[75%]');
+                    mainContent.classList.add('w-full');
+
+                    btnShowNotificationButton.classList.add('!block');
+                    btnShowNotificationButton.classList.remove('!hidden');
+                    btnCloseNotificationButton.classList.remove('!block');
+                    btnCloseNotificationButton.classList.add('!hidden');
+                } 
+                else 
+                {
+                    notificationList.classList.remove('w-0');
+                    notificationList.classList.add('w-[25%]');
+
+                    mainContent.classList.remove('w-full');
+                    mainContent.classList.add('w-[75%]');
+
+                    ShowNoNewNotification();
+
+                    btnShowNotificationButton.classList.remove('!block');
+                    btnShowNotificationButton.classList.add('!hidden');
+                    btnCloseNotificationButton.classList.add('!block');
+                    btnCloseNotificationButton.classList.remove('!hidden');
+                }
+            });
+
+            notificationList.addEventListener('click', function (event) {
+                // Check if the clicked element is a notification card
+                const notificationCard = event.target.closest('.relative');
+                if (notificationCard) {
+                    const notificationID = notificationCard.getAttribute('data-id');
+                    notificationCard.classList.remove('border-l-4');
+                    notificationCard.classList.remove('border-l-blue-500');
+                }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var userMenuButton = document.getElementById('user-menu-button');
+            var userMenu = document.getElementById('user-menu');
+
+            userMenuButton.addEventListener('click', function(e) {
+                e.stopPropagation(); // Prevent the click from propagating to the window
+                userMenu.classList.toggle('hidden');
+            });
+
+            // Close the dropdown if clicked outside
+            window.addEventListener('click', function(e) {
+                if (!userMenu.contains(e.target) && e.target !== userMenuButton) {
+                    userMenu.classList.add('hidden');
+                }
+            });
+
+            const toastData = sessionStorage.getItem('toastMessage');
+            if (toastData) {
+                const { message, type } = JSON.parse(toastData);
+                showToast(message, type);
+                sessionStorage.removeItem('toastMessage');
+            }
+
+            new DeviceTimeControlOnLoadHandler().DoSession();
+        });
+
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function () {
                 navigator.serviceWorker.register('/service-worker.js').then(function (registration) {
@@ -119,30 +334,8 @@
             });
         }
 
-        document.addEventListener('DOMContentLoaded', function () {
-            const toastData = sessionStorage.getItem('toastMessage');
-            if (toastData) {
-                const { message, type } = JSON.parse(toastData);
-                showToast(message, type);
-                sessionStorage.removeItem('toastMessage');
-            }
-        });
-
-        function showLoading() {
-            const loadingScreen = document.getElementById('loadingScreen');
-            loadingScreen.classList.remove('!hidden'); // Remove the '!hidden' class
-            loadingScreen.classList.add('!block'); // Add the '!block' class
-        }
-
-        function hideLoading() {
-            const loadingScreen = document.getElementById('loadingScreen');
-            loadingScreen.classList.remove('!block'); // Remove the '!block' class
-            loadingScreen.classList.add('!hidden'); // Add the '!hidden' class
-        }
-
         // Toast function
         function showToast(message, type = 'error', duration = 3000) {
-            console.log(message);
             const toastContainer = document.getElementById('toastContainer');
             const toast = document.createElement('div');
             toast.classList.add('toast', type);
@@ -282,7 +475,7 @@
             }
 
             // Initial fetch and start polling
-            fetchActiveTransactions();
+            // fetchActiveTransactions();
         }
         
         function isEmptyArray(data) {
@@ -348,22 +541,6 @@
             statusRibbon.textContent = newStatus;
         }
 
-        document.addEventListener('DOMContentLoaded', function () {
-            var userMenuButton = document.getElementById('user-menu-button');
-            var userMenu = document.getElementById('user-menu');
-
-            userMenuButton.addEventListener('click', function(e) {
-                e.stopPropagation(); // Prevent the click from propagating to the window
-                userMenu.classList.toggle('hidden');
-            });
-
-            // Close the dropdown if clicked outside
-            window.addEventListener('click', function(e) {
-                if (!userMenu.contains(e.target) && e.target !== userMenuButton) {
-                    userMenu.classList.add('hidden');
-                }
-            });
-        });
 
     </script>
 

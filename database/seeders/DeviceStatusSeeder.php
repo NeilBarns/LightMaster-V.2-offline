@@ -24,6 +24,9 @@ class DeviceStatusSeeder extends Seeder
             ['DeviceStatusID' => 6, 'Status' => 'Resume'],
             ['DeviceStatusID' => 7, 'Status' => 'Start Free'],
             ['DeviceStatusID' => 8, 'Status' => 'End Free'],
+            ['DeviceStatusID' => 9, 'Status' => 'Pending Delete'],
+            ['DeviceStatusID' => 10, 'Status' => 'Deleted'],
+            ['DeviceStatusID' => 11, 'Status' => 'Pending Exchange'],
         ]);
     }
 }

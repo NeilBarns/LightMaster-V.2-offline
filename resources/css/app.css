@@ -385,23 +385,24 @@ a {
 
 .left-nav a {
     display: block;
-    color: #333;
+    color: #687492 !important;
     text-decoration: none;
     padding: 10px;
     border-radius: 5px;
     display: flex;
-    font-size: 13px;
+    font-size: 1.05em;
     font-weight: bold;
     padding: 0.5rem !important;
 }
 
 .left-nav a:hover {
-    background-color: #ddd;
+    /* background-color: #ddd; */
+    color: #041f1e !important;
 }
 
 .left-nav .active a {
-    background-color: #474747;
-    color: #fff !important;
+    background-color: #F17141;
+    color: #041f1e !important;
 }
 
 .left-nav a img {

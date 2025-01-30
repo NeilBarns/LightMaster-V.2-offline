@@ -44,7 +44,7 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        showLoading();
+        ShowLoading();
 
         // Ensure the users' data is correctly encoded
         var users = {!! json_encode($users) !!};
@@ -86,7 +86,7 @@
             console.error('Users data is not defined or is not an array.');
         }
         
-        hideLoading();
+        HideLoading();
     });
 </script>
 

@@ -1,0 +1,5 @@
+{
+    "syncCountDown": 30,
+    "defaultWatchdogIntervalMinutes": 30,
+    "defaultRemainingTimeIntervalMinutes": 1
+}

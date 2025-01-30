@@ -307,7 +307,7 @@
     });
 
     function changeUserStatus(userId, status) {
-        showLoading();
+        ShowLoading();
 
         const url = `/user/status/${userId}/${status}`;
 
@@ -325,7 +325,7 @@
         })
         .then(response => response.json()) 
         .then(data => {
-            hideLoading();
+            HideLoading();
 
             if (data.success) {
                 sessionStorage.setItem('toastMessage', JSON.stringify({message: data.message, type: 'success'}));
@@ -335,7 +335,7 @@
             }
         })
         .catch(error => {
-            hideLoading();
+            HideLoading();
             showToast('An error occurred: ' + error.message, 'error');
         });
     }
@@ -349,13 +349,13 @@
             return;
         }
 
-        showLoading();
+        ShowLoading();
         var selectedNodes = gridApi.getSelectedNodes();
         var selectedData = selectedNodes.map(node => node.data.RoleID);
 
         if (selectedData.length === 0) {
             showToast('Please select at least one role.', 'error');
-            hideLoading();
+            HideLoading();
             return;
         }
 
@@ -383,7 +383,7 @@
             showToast('An error occurred: ' + error.message, 'error');
         });
 
-        hideLoading();
+        HideLoading();
     });
 
     document.getElementById('btnUpdateUser').addEventListener('click', function(event) {
@@ -395,14 +395,14 @@
             return;
         }
         
-        showLoading();
+        ShowLoading();
 
         const selectedNodes = gridApi.getSelectedNodes();
         const selectedData = selectedNodes.map(node => node.data.RoleID);
 
         if (selectedData.length === 0) {
             showToast('Please select at least one role.', 'error');
-            hideLoading();
+            HideLoading();
             return;
         }
 
@@ -430,7 +430,7 @@
             showToast('An error occurred: ' + error.message, 'error');
         });
 
-        hideLoading();
+        HideLoading();
     });
 });
 </script>

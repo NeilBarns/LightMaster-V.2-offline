@@ -192,13 +192,13 @@
             return;
         }
 
-        showLoading();
+        ShowLoading();
         var selectedNodes = gridApi.getSelectedNodes();
         var selectedData = selectedNodes.map(node => node.data.PermissionId);
 
         if (selectedData.length === 0) {
             showToast('Please select at least one permission.', 'error');
-            hideLoading();
+            HideLoading();
             return;
         }
 
@@ -226,12 +226,12 @@
             showToast('An error occurred: ' + error.message, 'error');
         });
 
-        hideLoading();
+        HideLoading();
     });
 
     document.getElementById('btnUpdateRole').addEventListener('click', function(event) {
         event.preventDefault();
-        showLoading();
+        ShowLoading();
 
         if (!document.getElementById('roleForm').checkValidity()) {
             document.getElementById('roleForm').reportValidity();
@@ -243,7 +243,7 @@
 
         if (selectedData.length === 0) {
             showToast('Please select at least one permission.', 'error');
-            hideLoading();
+            HideLoading();
             return;
         }
 
@@ -271,7 +271,7 @@
             showToast('An error occurred: ' + error.message, 'error');
         });
 
-        hideLoading();
+        HideLoading();
     });
 });
 </script>

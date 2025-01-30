@@ -259,7 +259,7 @@
             return;
         }
         
-        showLoading();
+        ShowLoading();
 
         const formData = new FormData(document.getElementById('userProfileForm'));
 
@@ -284,7 +284,7 @@
             showToast('An error occurred: ' + error.message, 'error');
         });
 
-        hideLoading();
+        HideLoading();
     });
 });
 </script>

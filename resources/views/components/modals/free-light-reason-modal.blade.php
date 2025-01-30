@@ -32,11 +32,11 @@
             return;
         }
 
-        showLoading();
+        ShowLoading();
 
         // Optionally submit via AJAX if you want to handle submission without page reload
         const formData = new FormData(freeLightForm);
-
+        
         fetch(freeLightForm.action, {
             method: 'POST',
             body: formData,
@@ -46,17 +46,17 @@
         })
         .then(response => response.json())
         .then(data => {
-            hideLoading();
-            console.log(data);
             if (data.success) {
+                console.log(formData);
                 $(freeLightModal).modal('hide');
                  window.location.href = '/device';
             } else {
-                showToast('Failed to activate free light. Please try again.');
+                showToast(data.message || "Possible network error occurred. Please see logs for more info.", 'error');
             }
+            HideLoading();
         })
         .catch(error => {
-            hideLoading();
+            HideLoading();
             console.error('Error:', error);
             showToast('An error occurred. Please try again.');
         });

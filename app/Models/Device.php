@@ -17,16 +17,21 @@ class Device extends Model
 
     protected $fillable = [
         'DeviceName',
-        'ExternalDeviceName',
+        'DeviceName',
         'Description',
         'DeviceStatusID',
+        'IsOnline',
         'WatchdogInterval',
         'RemainingTimeNotification',
+        'SerialNumber',
         'IPAddress',
+        'last_heartbeat'
     ];
 
     protected $casts = [
-        'OperationDate' => 'datetime'
+        'DeletionDate' => 'datetime',
+        'OperationDate' => 'datetime',
+        'last_heartbeat' => 'datetime'
     ];
 
 
@@ -44,4 +49,10 @@ class Device extends Model
     {
         return $this->hasMany(DeviceTimeTransactions::class, 'DeviceID');
     }
+
+    public function device_times()
+    {
+        return $this->hasMany(DeviceTime::class, 'DeviceID', 'DeviceID')
+        ->whereNotIn('TimeTypeID', [2]);
+    }    
 }

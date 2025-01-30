@@ -19,6 +19,7 @@ class TimeTypeSeeder extends Seeder
             ['TimeTypeID' => 1, 'Name' => 'BASE'],
             ['TimeTypeID' => 2, 'Name' => 'INCREMENT'],
             ['TimeTypeID' => 3, 'Name' => 'OPEN'],
+            ['TimeTypeID' => 4, 'Name' => 'FREE'],
         ]);
     }
 }

@@ -29,6 +29,7 @@ class PermissionsSeeder extends Seeder
             ['PermissionName' => 'can_trigger_free_light', 'Description' => 'Can trigger free light function'],
             ['PermissionName' => 'can_delete_device', 'Description' => 'Can delete device'],
             ['PermissionName' => 'can_disable_device', 'Description' => 'Can disable device'],
+            ['PermissionName' => 'can_exchange_device', 'Description' => 'Can exchange device with another'],
             ['PermissionName' => 'can_edit_device_base_time', 'Description' => 'Can edit/update device base time'],
             ['PermissionName' => 'can_add_device_increments', 'Description' => 'Can add/create device increments'],
             ['PermissionName' => 'can_disable_device_increments', 'Description' => 'Can disable device increments'],

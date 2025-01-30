@@ -16,10 +16,11 @@ return new class extends Migration
         Schema::create('DeviceTimeTransactions', function (Blueprint $table) {
             $table->bigIncrements('TransactionID');
             $table->unsignedBigInteger('DeviceID');
+            $table->integer('Thread')->default(0);
+            $table->integer('PauseThread')->default(0);
             $table->string('TransactionType', 11);
             $table->boolean('IsOpenTime')->default(false)->nullable();
-            $table->dateTime('StartTime');
-            $table->dateTime('EndTime')->nullable();
+            $table->dateTime('TransactionDateTime');
             $table->enum('StoppageType', ['AUTO', 'MANUAL'])->nullable();
             $table->integer('Duration');
             $table->decimal('Rate', 8, 2);

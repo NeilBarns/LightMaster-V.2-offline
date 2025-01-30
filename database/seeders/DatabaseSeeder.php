@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             DeviceStatusSeeder::class,
+            QueueStatusSeeder::class,
             TimeTypeSeeder::class,
             PermissionsSeeder::class,
             UsersSeeder::class,

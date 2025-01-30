@@ -2,15 +2,20 @@
 use App\Enums\PermissionsEnum;
 @endphp
 
-<div class="h-full flex flex-col bg-color-default ">
+<div class="h-full w-full flex flex-col bg-color-default !bg-[#FFECAE]">
     <div class="grow-0 h-16">
         <div class="flex h-full items-center px-4">
             {{-- <img class="h-10 mr-3" src="{{ asset('imgs/isabela-state-university-logo.png') }}" alt="logo"> --}}
             <img class="h-[25px]" src="{{ asset('imgs/LightMaster.png') }}" alt="logo">
+
+            <button id="sidebar-hide-toggle" class="absolute left-64 text-white p-1 rounded-full shadow-md hover:bg-gray-400 hover:shadow-lg transition-all duration-300">
+                <img src="{{ asset('imgs/arrow-left-s-line.png') }}" alt="Bell icon" 
+                            class="w-6 h-6 !block">
+            </button>
         </div>
     </div>
-    <div class="flex-1 left-nav">
-        <div class="uk-width-1-2@s uk-width-2-5@m" style="width: 100% !important">
+    <div class="flex-1 left-nav w-full">
+        <div class="uk-width-1-2@s uk-width-2-5@m !w-full">
             <ul class="uk-nav-default" uk-nav>
                 {{-- @can(PermissionsEnum::VIEW_DASHBOARD)
                 <li id="dashboard-menu-item" style="display: none"

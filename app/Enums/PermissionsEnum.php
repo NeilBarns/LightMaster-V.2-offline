@@ -13,6 +13,7 @@ class PermissionsEnum
     const CAN_TRIGGER_FREE_LIGHT = 'can_trigger_free_light';
     const CAN_DELETE_DEVICE = 'can_delete_device';
     const CAN_DISABLE_DEVICE = 'can_disable_device';
+    const CAN_EXCHANGE_DEVICE = 'can_exchange_device';
     const CAN_EDIT_DEVICE_BASE_TIME = 'can_edit_device_base_time';
     const CAN_ADD_DEVICE_INCREMENTS = 'can_add_device_increments';
     const CAN_DISABLE_DEVICE_INCREMENTS = 'can_disable_device_increments';

@@ -16,18 +16,20 @@ return new class extends Migration
         Schema::create('Devices', function (Blueprint $table) {
             $table->bigIncrements('DeviceID');
             $table->string('DeviceName', 50);
-            $table->string('ExternalDeviceName', 50);
             $table->string('Description')->nullable();
             $table->unsignedBigInteger('DeviceStatusID');
-            $table->string('IPAddress');
+            $table->boolean('IsOnline')->nullable();
+            $table->string('SerialNumber', 50)->nullable();
+            $table->string('IPAddress', 20)->nullable();
             $table->unsignedBigInteger('RemainingTimeNotification')->nullable();
             $table->unsignedBigInteger('WatchdogInterval')->nullable();
+            $table->dateTime('DeletionDate')->nullable();
             $table->dateTime('OperationDate')->nullable();
+            $table->dateTime('last_heartbeat')->nullable();
             $table->timestamps();
-
+            
             //Indexes
             $table->index('DeviceName');
-            $table->index('ExternalDeviceName');
         });
     }
 

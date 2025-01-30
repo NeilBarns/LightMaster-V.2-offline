@@ -55,7 +55,6 @@ return [
     */
 
     'url' => env('APP_URL', 'http://localhost'),
-
     'asset_url' => env('ASSET_URL'),
 
     /*
@@ -212,4 +211,5 @@ return [
         // 'ExampleClass' => App\Example\ExampleClass::class,
     ])->toArray(),
 
+    'websocket' => env('WEBSOCKET_URL', 'ws://127.0.0.1:8080'),
 ];

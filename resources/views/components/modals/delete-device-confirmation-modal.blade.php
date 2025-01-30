@@ -30,16 +30,15 @@
         if (deleteDeviceButton) {
             deleteDeviceButton.addEventListener('click', function() {
                 deleteId = this.getAttribute('data-id');
-                console.log('deleteId', deleteId);
                 $(deleteDeviceConfirmationModal).modal('show');
             });
         }
 
         confirmDeleteButton.addEventListener('click', function () {
             $(deleteDeviceConfirmationModal).modal('hide');
-            showLoading();
-            fetch('/api/device/' + deleteId + '/delete', {
-                method: 'DELETE',
+            ShowLoading();
+            fetch('/api/device/' + deleteId + '/request/delete', {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
@@ -47,17 +46,18 @@
             })
             .then(response => response.json())
             .then(data => {
+                console.log(data);
                 if (data.success) {
-                    hideLoading();
-                   sessionStorage.setItem('toastMessage', JSON.stringify({message: 'Device deleted successfully!', type: 'success'}));
+                   HideLoading();
+                   sessionStorage.setItem('toastMessage', JSON.stringify({message: 'Request to delete the device sent successfully!', type: 'success'}));
                    window.location.href = '{{ route('devicemanagement') }}'
                 } else {
-                    hideLoading();
-                    showToast('Failed to delete device.', 'error');
+                    HideLoading();
+                    showToast(data.message || "Failed to delete device.", 'error');
                 }
             })
             .catch(error => {
-                hideLoading();
+                HideLoading();
                 console.error('Error:', error);
             });
         });

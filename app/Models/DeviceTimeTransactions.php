@@ -17,9 +17,10 @@ class DeviceTimeTransactions extends Model
     protected $fillable = [
         'DeviceID',
         'TransactionType',
+        'Thread',
+        'PauseThread',
         'IsOpenTime',
-        'StartTime',
-        'EndTime',
+        'TransactionDateTime',
         'StoppageType',
         'Duration',
         'Rate',

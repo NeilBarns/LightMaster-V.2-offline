@@ -15,6 +15,7 @@ class DeviceTime extends Model
     const TIME_TYPE_BASE = 1;
     const TIME_TYPE_INCREMENT = 2;
     const TIME_TYPE_OPEN = 3;
+    const TIME_TYPE_FREE = 4;
 
     public $timestamps = false;
 

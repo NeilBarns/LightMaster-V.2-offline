@@ -37,7 +37,7 @@
 
         confirmDeleteButton.addEventListener('click', function () {
             $(deleteUserConfirmationModal).modal('hide');
-            showLoading();
+            ShowLoading();
             fetch('/user/delete/' + deleteId, {
                 method: 'DELETE',
                 headers: {
@@ -48,16 +48,16 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    hideLoading();
+                    HideLoading();
                    sessionStorage.setItem('toastMessage', JSON.stringify({message: 'User deleted successfully!', type: 'success'}));
                    window.location.href = '{{ route('manage-users') }}'
                 } else {
-                    hideLoading();
+                    HideLoading();
                     showToast('Failed to delete user.', 'error');
                 }
             })
             .catch(error => {
-                hideLoading();
+                HideLoading();
                 showToast('Error: ' + error.message, 'error');
             });
         });

@@ -42,7 +42,7 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        showLoading();
+        ShowLoading();
         var gridOptions = {
             columnDefs: [
                 { headerName: "RoleID", field: "RoleID", hide: true },
@@ -65,7 +65,7 @@
 
         const eGridDiv = document.querySelector('#grdRoles');
         const gridApi = agGrid.createGrid(eGridDiv, gridOptions);
-        hideLoading();
+        HideLoading();
     });
 </script>
 @endsection

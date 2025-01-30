@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -40,77 +39,39 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('css/semantic.min.css') }}">
     <script src="{{ asset('js/semantic.min.js') }}"></script>
 </head>
-
-<body class="antialiased flex justify-center items-center min-h-screen bg-gray-100">
-    <div class="w-full max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-6"
-        style="box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);">
-        <div class="flex flex-col justify-center items-center mb-8">
-            <img src="{{ asset('imgs/lightmaster-icon.png') }}" alt="LightMaster" class="h-20 mb-4">
-            <h2 class="text-xl font-semibold text-gray-800">LightMaster</h2>
-            <p class="text-gray-600 italic">"Lighting the way, the smart way."</p>
+<body class="bg-[#FFECAE] flex items-center justify-center h-screen">
+    <div class="max-w-7xl w-full bg-white p-8 rounded-lg shadow-2xl flex">
+        <div class="w-1/2 flex justify-center items-center rounded-lg p-6 bg-gray-50">
+            {{-- <img src="{{ asset('imgs/sapiens.png') }}" alt="sapiens" class="w-full"> --}}
+            <img src="{{ asset('imgs/Humaaans.png') }}" alt="sapiens" class="w-full">
         </div>
-        <h4 class="ui divider"></h4>
-        <form action="{{ route('auth.login') }}" method="POST" class="ui form">
-            @csrf
-            <div class="field">
-                <label for="username">User Name</label>
-                <input type="text" name="username" id="username" placeholder="Enter your username" required>
+
+        <div class="w-1/2 p-8">
+            <div class="text-right float-right text-sm text-gray-500">
+                <img class="h-[25px]" src="{{ asset('imgs/LightMaster.png') }}" alt="logo">
             </div>
-            <div class="field">
-                <label for="password">Password</label>
-                <input type="password" name="password" id="password" placeholder="Enter your password" required>
-            </div>
-            <div class="flex flex-col mt-6">
-                @error('failed')
+            <h2 class="text-2xl font-bold mb-2 text-gray-700">Hello Again!</h2>
+            <p class="text-sm text-gray-500 mb-6">Welcome back, you've been missed!</p>
+            <form action="{{ route('auth.login') }}" method="POST">
+                @csrf
+                <div class="mb-4">
+                    <input type="text" name="username" id="username" placeholder="Enter username" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                </div>
+                <div class="mb-4 relative">
+                    <input type="password" name="password" id="password" placeholder="Password" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    <span class="absolute right-3 top-3 text-gray-400 cursor-pointer">👁️</span>
+                </div>
+                <div class="text-right text-sm text-white mb-4">
+                    <span href="#">Recovery Password</span>
+                    @error('failed')
                 <div class="ui negative message">
                     {{ $message }}
                 </div>
                 @enderror
-                <button type="submit" class="ui fluid primary button">
-                    Login
-                </button>
-            </div>
-        </form>
+                </div>
+                <button type="submit" class="w-full bg-[#F17141] text-white py-3 rounded-lg hover:bg-red-600 transition">Sign In</button>
+            </form>
+        </div>
     </div>
-
-    <!-- Styling for logo animation -->
-    <style>
-        body {
-            font-family: 'Nunito', sans-serif;
-        }
-
-        .ui.form .field label {
-            font-weight: bold;
-            color: #4a5568;
-        }
-
-        .primary.button {
-            background-color: #4caf50 !important;
-            border-radius: 0.375rem;
-            color: white;
-        }
-
-        .primary.button:hover {
-            background-color: #388e3c !important;
-        }
-
-        .shadow-md {
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-
-        .bg-gray-100 {
-            background-color: #f7fafc;
-        }
-
-        /* Add animation to the logo */
-        .h-20 {
-            transition: transform 0.3s ease-in-out;
-        }
-
-        .h-20:hover {
-            transform: scale(1.1);
-        }
-    </style>
 </body>
-
 </html>
