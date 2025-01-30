@@ -60,7 +60,7 @@ $randomGreeting = $greetings[array_rand($greetings)];
     <div class="ui divider"></div>
 
     @if($devices->isEmpty())
-    <div class="ui flex card h-full overflow-y-auto justify-center align-middle">
+    <div class="ui flex card h-full !w-full justify-center align-middle">
         <div class="flex justify-center items-center h-full w-full">
             <img class="max-h-80 opacity-50" src="{{ asset('imgs/no-device.png') }}" alt="No devices">
         </div>
