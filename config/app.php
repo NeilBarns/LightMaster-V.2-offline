@@ -211,5 +211,5 @@ return [
         // 'ExampleClass' => App\Example\ExampleClass::class,
     ])->toArray(),
 
-    'websocket' => env('WEBSOCKET_URL', 'ws://127.0.0.1:8080'),
+    'websocket_url' => env('WEBSOCKET_URL', 'ws://127.0.0.1:8080'),
 ];

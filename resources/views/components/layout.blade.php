@@ -20,7 +20,11 @@
 
     {{--
     <link href="/css/app.css" rel="stylesheet"> --}}
-
+    <script>
+        window.appConfig = {
+            websocketUrl: "{{ config('app.websocket_url') }}"
+        };
+    </script>
     <!-- UIkit CSS -->
     <link rel="stylesheet" href="{{ asset('css/uikit.min.css') }}" />
 
@@ -36,9 +40,9 @@
 
     <!-- Chart.js  -->
     <script src="{{ asset('js/chart.js') }}"></script>
-    <script>
-        const WEBSOCKET_URL = "{{ config('app.websocket') }}";
-    </script>
+
+    
+
     <script src="{{ asset('js/functions/websocketHandler.js') }}" defer></script>
 
     <!-- Fomantic IU -->
@@ -200,6 +204,7 @@
     <script>
 
         document.addEventListener('DOMContentLoaded', function () {
+
             const sideNav = document.getElementById('side-nav');
             const sidebarHideToggleButton = document.getElementById('sidebar-hide-toggle');
             const sidebarShowToggleButton = document.getElementById('sidebar-show-toggle');

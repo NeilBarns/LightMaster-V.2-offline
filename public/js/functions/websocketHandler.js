@@ -1,8 +1,8 @@
-const ws = new WebSocket(WEBSOCKET_URL);
+const ws = new WebSocket(window.appConfig.websocketUrl);
 const messageQueue = [];
 
 ws.onopen = () => {
-    console.log('WebSocket connection established');
+    //console.log('WebSocket connection established');
     while (messageQueue.length > 0) {
         const queuedMessage = messageQueue.shift();
         ws.send(queuedMessage);
@@ -12,7 +12,7 @@ ws.onopen = () => {
 
 ws.onmessage = function (event) {
     const data = JSON.parse(event.data);
-    console.log('data', data);
+    //console.log('data', data);
     /*
     * Real time updates when a new device has
     * been added or removed/deleted

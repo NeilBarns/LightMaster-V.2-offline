@@ -31,7 +31,7 @@ class NotificationUpdates implements ShouldBroadcastNow
         ];
 
         try {
-            $client = new Client(env('WEBSOCKET_URL'));
+            $client = new Client(config('app.websocket_url'));
             $client->send(json_encode($message));
             $client->close();
     
