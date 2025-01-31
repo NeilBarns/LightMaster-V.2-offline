@@ -540,7 +540,7 @@ class DeviceManagementController extends Controller
 
         try {
             $updatedCount = Device::where('IsOnline', true)
-                ->whereRaw('TIMESTAMPDIFF(SECOND, last_heartbeat, ?) >= ?', [$now, 120]) // 1 minute 30 seconds = 90 seconds
+                ->whereRaw('TIMESTAMPDIFF(SECOND, last_heartbeat, ?) >= ?', [$now, 90]) // 1 minute 30 seconds = 90 seconds
                 ->update(['IsOnline' => false]);
 
             $offlineDevices = Device::where('IsOnline', false)
