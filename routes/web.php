@@ -139,21 +139,21 @@ Route::middleware(['auth'])->group(function () {
     });
 
 
-    Route::get('/check-ssid', function () {
-        $output = shell_exec('netsh wlan show interfaces');
+    // Route::get('/check-ssid', function () {
+    //     $output = shell_exec('netsh wlan show interfaces');
     
-        preg_match('/\s*SSID\s*:\s*([^\r\n]*)/', $output, $matches);
+    //     preg_match('/\s*SSID\s*:\s*([^\r\n]*)/', $output, $matches);
     
-        $currentSSID = isset($matches[1]) ? trim($matches[1]) : null;
+    //     $currentSSID = isset($matches[1]) ? trim($matches[1]) : null;
     
-        $expectedSSID = config('app.expected_ssid');
+    //     $expectedSSID = config('app.expected_ssid');
     
-        if ($currentSSID === $expectedSSID) {
-            return response()->json(['connected' => true, 'ssid' => $currentSSID]);
-        }
+    //     if ($currentSSID === $expectedSSID) {
+    //         return response()->json(['connected' => true, 'ssid' => $currentSSID]);
+    //     }
     
-        return response()->json(['connected' => false, 'ssid' => $currentSSID]);
-    });
+    //     return response()->json(['connected' => false, 'ssid' => $currentSSID]);
+    // });
     
 });
 
