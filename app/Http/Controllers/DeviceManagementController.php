@@ -26,7 +26,9 @@ use App\Models\DeviceTimeTransactionsResponse;
 use App\Models\Exchange;
 use App\Models\NotificationResponse;
 use App\Models\Notifications;
+use App\Models\TimeTransactionQueue;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\DB;
 
 use function PHPSTORM_META\elementType;
 
@@ -178,23 +180,6 @@ class DeviceManagementController extends Controller
 
             $deviceName = env('DEFAULT_DEVICE_NAME') . '-' . $deviceCount + 1;
 
-            $deviceExchange = Exchange::where('ExchangeSerialNumber', $validatedData['SerialNumber'])
-                                ->where('ExchangeStatusID', ExchangeStatusEnum::PENDING_ID)
-                                ->where('Active', true)
-                                ->first();
-
-            $originDevice = null; 
-
-            if ($deviceExchange)
-            {
-                $originDevice = Device::where('DeviceID', $deviceExchange->DeviceID)->first();
-                
-                if($originDevice)
-                {
-                    $deviceName = $originDevice->DeviceName;
-                }
-            }
-
             $device->DeviceName = $deviceName;
             $device->IPAddress = $validatedData['IPAddress'];
             $device->SerialNumber = $validatedData['SerialNumber'];
@@ -206,41 +191,6 @@ class DeviceManagementController extends Controller
             $device->save();
 
             LoggingController::InsertLog(LogEntityEnum::DEVICE, $device->DeviceID, 'Device ' . $device->DeviceName . ' registered.', LogTypeEnum::INFO, 999999);
-
-            if ($deviceExchange)
-            {
-
-                $deviceManagementController = new DeviceManagementController();
-                
-                //Begin data exchange
-                $deviceManagementController->ExchangeDeviceDisplay($originDevice->DeviceID, $device->DeviceID);
-                $deviceManagementController->ExchangeDeviceTime($originDevice->DeviceID, $device->DeviceID);
-                $deviceManagementController->ExchangeDeviceTimeTransactions($originDevice->DeviceID, $device->DeviceID);
-
-                $latestDeviceThreadsNumber = Exchange::where('DeviceID', $originDevice->DeviceID)
-                                        ->max('Thread');
-            
-                Exchange::create([
-                    'DeviceID' => $originDevice->DeviceID,
-                    'Thread' => $latestDeviceThreadsNumber,
-                    'Active' => false,
-                    'SerialNumber' => $originDevice->SerialNumber,
-                    'ExchangeSerialNumber' => $deviceExchange->ExchangeSerialNumber,
-                    'ExchangeStatusID' => ExchangeStatusEnum::COMPLETED_ID
-                ]);
-
-                Exchange::where('DeviceID', $originDevice->DeviceID)
-                        ->where('Thread', $latestDeviceThreadsNumber)
-                        ->where('Active', true)
-                        ->update(['Active' => false]);
-
-                LoggingController::InsertLog(LogEntityEnum::DEVICE, $device->DeviceID, 
-                'Successfully exchanged ' . $device->DeviceName . ' from serial number ' . $originDevice->SerialNumber . ' to ' . $deviceExchange->ExchangeSerialNumber, 
-                LogTypeEnum::INFO, 999999);
-
-                //Delete old device
-                $deviceManagementController->RequestDeleteDevice($originDevice->DeviceID);
-            }
 
             event(new DeviceAddRemoveUpdates());
 
@@ -267,8 +217,12 @@ class DeviceManagementController extends Controller
 
     public function ExchangeDeviceTimeTransactions($fromDeviceID, $toDeviceID)
     {
-        DeviceTimeTransactions::where('DeviceID', $fromDeviceID)
-        ->update(['DeviceID' => $toDeviceID]);
+        DB::transaction(function () use ($fromDeviceID, $toDeviceID) {
+            if (DeviceTimeTransactions::where('DeviceID', $fromDeviceID)->exists()) {
+                DeviceTimeTransactions::where('DeviceID', $fromDeviceID)
+                    ->update(['DeviceID' => $toDeviceID]);
+            }
+        });
     }
 
     public function UpdateDeviceDetails(Request $request)
@@ -280,7 +234,6 @@ class DeviceManagementController extends Controller
 
         $device = Device::with('deviceStatus')->findOrFail($validatedData['DeviceID']);
 
-        Log::info($device);
         try {
             $oldIP = $device->IPAddress;
 
@@ -972,6 +925,13 @@ class DeviceManagementController extends Controller
 
         try {
 
+            $nodeToExchange = Device::where('SerialNumber', $request['serialNumber'])->first();
+
+            if (!$nodeToExchange)
+            {
+                return response()->json(['success' => false, 'message' => 'Node with the given serial number does not exist.']);
+            }
+
             $latestThreadsNumber = Exchange::max('Thread') + 1 ?? 1;
 
             Exchange::create([
@@ -989,7 +949,36 @@ class DeviceManagementController extends Controller
 
             LoggingController::InsertLog(LogEntityEnum::DEVICE, $device->DeviceID, 'Request to exchange node ' . $device->DeviceName . ' to node with serial number of ' . $request['serialNumber'] , LogTypeEnum::INFO, auth()->id());
 
-            return response()->json(['success' => true, 'message' => 'Device is in pending exchange status.']);
+            $deviceManagementController = new DeviceManagementController();
+
+            DeviceDisplay::where('DeviceID', $id)->delete();
+            DeviceTime::where('DeviceID', $id)->delete();
+            Notifications::where('DeviceID', $id)->delete();
+            TimeTransactionQueue::where('DeviceID', $id)->delete();
+
+            $deviceManagementController->ExchangeDeviceTimeTransactions($id, $nodeToExchange->DeviceID);
+            
+            Exchange::create([
+                'DeviceID' => $id,
+                'Thread' => $latestThreadsNumber,
+                'Active' => false,
+                'SerialNumber' => $device->SerialNumber,
+                'ExchangeSerialNumber' => $nodeToExchange->ExchangeSerialNumber,
+                'ExchangeStatusID' => ExchangeStatusEnum::COMPLETED_ID
+            ]);
+
+            Exchange::where('DeviceID', $id)
+                    ->where('Thread', $latestThreadsNumber)
+                    ->where('Active', true)
+                    ->update(['Active' => false]);
+
+            LoggingController::InsertLog(LogEntityEnum::DEVICE, $device->DeviceID, 
+            'Successfully exchanged ' . $device->DeviceName . ' from serial number ' . $device->SerialNumber . ' to ' . $nodeToExchange->ExchangeSerialNumber, 
+            LogTypeEnum::INFO, 999999);
+
+            $deviceManagementController->RequestDeleteDevice($id);
+
+            return response()->json(['success' => true, 'message' => 'Device exchanged successfully!']);
         } catch (\Exception $e) {
             Log::error('Error updating device to pending exchange: ', ['error' => $e->getMessage()]);
             return response()->json(['success' => false, 'message' => 'Error updating device to pending exchange.']);

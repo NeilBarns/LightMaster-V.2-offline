@@ -30,8 +30,6 @@ class TimeTransactionQueueHandler extends Command
         try {
             $now = Carbon::now();
 
-            //Log::info("Starting Time Transaction Queue job");
-
             $expiredTimers = TimeTransactionQueue::where('QueueStatusID', QueueStatusEnum::ACTIVE_ID)
                 ->where('EndTime', '<=', $now)
                 ->whereDoesntHave('device', function ($query) {
@@ -55,7 +53,6 @@ class TimeTransactionQueueHandler extends Command
 
     private function processExpiredTimer($timer)
     {
-        //Log::info("Ending Time for Device ID {$timer->DeviceID} with thread {$timer->Thread}");
         try {
             if ($timer->DeviceStatusID == DeviceStatusEnum::STARTFREE_ID)
             {
@@ -73,7 +70,6 @@ class TimeTransactionQueueHandler extends Command
             ]);
         }
         finally {
-            //Log::info("Ended Time Transaction Queue job");
         }
     }
 }

@@ -162,6 +162,7 @@
                     </div>
                 </div>
                 <div class="h-full overflow-y-hidden">
+                    <div id="wifi-status" class=" text-center bg-red-400 !text-white text-sm"></div>
                     @yield('content')
                     <script>
                         $(document).ready(function() {
@@ -252,6 +253,62 @@
                 sidebarShowPane.classList.remove('block');
             }
         });
+
+        let wifiStatusElement = document.getElementById("wifi-status");
+        let errorFlagVisible = false; // Track if error flag is currently visible
+
+        function checkWifiStatus() {
+            if (navigator.onLine) {
+                // Check if connected to the correct SSID
+                fetch('/check-ssid')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (!data.connected) {
+                            wifiStatusElement.innerText = "Not connected to the expected WiFi (" + data.ssid + ")";
+                            wifiStatusElement.classList.remove('!text-black');
+                            wifiStatusElement.classList.remove('bg-green-400');
+                            wifiStatusElement.classList.remove('py-2');
+                            wifiStatusElement.classList.add('!text-white');
+                            wifiStatusElement.classList.add('bg-red-400');
+                            wifiStatusElement.classList.add('py-2');
+                            wifiStatusElement.style.display = "block";
+                            errorFlagVisible = true;
+                        } else {
+                            if (errorFlagVisible) {
+                                wifiStatusElement.innerText = "Connected!";
+                                wifiStatusElement.classList.remove('!text-white');
+                                wifiStatusElement.classList.remove('bg-red-400');
+                                wifiStatusElement.classList.remove('py-2');
+                                wifiStatusElement.classList.add('!text-black');
+                                wifiStatusElement.classList.add('bg-green-400');
+                                wifiStatusElement.classList.add('py-2');
+                                
+                                setTimeout(() => {
+                                    wifiStatusElement.style.display = "none"; // Hide flag after 3 seconds
+                                    errorFlagVisible = false;
+                                }, 3000);
+                            }
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error checking SSID:", error);
+                    });
+            } else {
+                // Show error flag when disconnected
+                wifiStatusElement.innerText = "Disconnected";
+                wifiStatusElement.classList.add('bg-red-400');
+                wifiStatusElement.style.display = "block";
+                wifiStatusElement.style.display = "block"; // Ensure flag is visible
+                errorFlagVisible = true;
+            }
+        }
+
+        window.addEventListener('load', checkWifiStatus);
+        window.addEventListener('online', checkWifiStatus);
+        window.addEventListener('offline', checkWifiStatus);
+
+    // Check WiFi status every 5 seconds
+    setInterval(checkWifiStatus, 5000);
 
         document.addEventListener('DOMContentLoaded', function () {
             const notificationButton = getNotificationButton();

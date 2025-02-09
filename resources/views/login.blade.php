@@ -39,10 +39,17 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('css/semantic.min.css') }}">
     <script src="{{ asset('js/semantic.min.js') }}"></script>
 </head>
-<body class="bg-[#FFECAE] flex items-center justify-center h-screen">
-    <div class="max-w-7xl w-full bg-white p-8 rounded-lg shadow-2xl flex">
+<body class="relative flex items-center justify-center h-screen bg-[#FFECAE] overflow-hidden">
+    <div class="ripple-background">
+        <span class="ripple"></span>
+        <span class="ripple"></span>
+        <span class="ripple"></span>
+        <span class="ripple"></span>
+        <span class="ripple"></span>
+    </div>
+
+    <div class="max-w-7xl w-full bg-white p-8 rounded-lg shadow-2xl flex relative z-10">
         <div class="w-1/2 flex justify-center items-center rounded-lg p-6 bg-gray-50">
-            {{-- <img src="{{ asset('imgs/sapiens.png') }}" alt="sapiens" class="w-full"> --}}
             <img src="{{ asset('imgs/Humaaans.png') }}" alt="sapiens" class="w-full">
         </div>
 
@@ -64,14 +71,86 @@
                 <div class="text-right text-sm text-white mb-4">
                     <span href="#">Recovery Password</span>
                     @error('failed')
-                <div class="ui negative message">
-                    {{ $message }}
-                </div>
-                @enderror
+                    <div class="ui negative message">
+                        {{ $message }}
+                    </div>
+                    @enderror
                 </div>
                 <button type="submit" class="w-full bg-[#F17141] text-white py-3 rounded-lg hover:bg-red-600 transition">Sign In</button>
             </form>
         </div>
     </div>
+
+    <!-- Ripple Animation CSS -->
+    <style>
+        body {
+            background-color: #FFECAE; /* Keep the original background */
+            overflow: hidden;
+        }
+
+        /* Ripple container */
+        .ripple-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        /* Ripple effect */
+        .ripple {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            background: rgba(194, 148, 86, 0.8); /* More visible, darker than before */
+            border-radius: 50%;
+            animation: rippleAnimation 7s infinite ease-in-out;
+            opacity: 0;
+        }
+
+        /* Randomly position each ripple */
+        .ripple:nth-child(1) {
+            top: 20%;
+            left: 30%;
+            animation-delay: 0s;
+        }
+        .ripple:nth-child(2) {
+            top: 50%;
+            left: 70%;
+            animation-delay: 1.5s;
+        }
+        .ripple:nth-child(3) {
+            top: 80%;
+            left: 40%;
+            animation-delay: 3s;
+        }
+        .ripple:nth-child(4) {
+            top: 30%;
+            left: 80%;
+            animation-delay: 4.5s;
+        }
+        .ripple:nth-child(5) {
+            top: 70%;
+            left: 20%;
+            animation-delay: 6s;
+        }
+
+        /* Animation: Expanding and Fading Ripples */
+        @keyframes rippleAnimation {
+            0% {
+                transform: scale(0);
+                opacity: 0.8; /* More visible */
+            }
+            50% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: scale(5);
+                opacity: 0.1; /* Fades but still noticeable */
+            }
+        }
+    </style>
 </body>
 </html>

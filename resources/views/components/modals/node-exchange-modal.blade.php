@@ -1,6 +1,13 @@
 <div id="nodeExchangeModal" class="ui modal">
     <div class="header">Node Exchange</div>
     <div class="content">
+        <div class="ui error message">
+            <div class="header">
+                Are you sure you want to exchange this device?
+            </div>
+            <p>This action will delete and reset this device to its factory settings and remove all associated data. Data on this node will then be transferred to the node with the given serial number. Please confirm
+                to proceed with the exchange.</p>
+        </div>
         <form class="ui form" id="nodeExchangeForm" action="{{ route('device.exchange', ['id' => $device->DeviceID]) }}"
             method="POST">
             @csrf
@@ -37,6 +44,7 @@
             return;
         }
 
+        $(nodeExchangeModal).modal('hide');
         ShowLoading();
 
         // Optionally submit via AJAX if you want to handle submission without page reload
@@ -53,7 +61,6 @@
         .then(data => {
             console.log(data);
             if (data.success) {
-                $(nodeExchangeModal).modal('hide');
                  window.location.href = '/device';
             } else {
                 showToast(data.message || "Possible network error occurred. Please see logs for more info.", 'error');

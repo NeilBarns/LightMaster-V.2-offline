@@ -1094,7 +1094,6 @@ class DeviceTimeController extends Controller
 
     public function EndDeviceTimeAuto($id)
     {
-        Log::info('End Device Time Auto');
         $device = Device::findOrFail($id);
         $officialEndTime = Carbon::now();
         $response = null;
@@ -1983,18 +1982,6 @@ class DeviceTimeController extends Controller
                 $remainingTime = $totalTime - $totalUsedTimeBeforePause;
             }
         
-            $transaction = DeviceTimeTransactions::create([
-                'DeviceID' => $device->DeviceID,
-                'TransactionType' => $transactionType,
-                'Thread' => $thread,
-                'IsOpenTime' => $isOpenTime,
-                'TransactionDateTime' => $officialResumeTime,
-                'Duration' => 0,
-                'Rate' => 0,
-                'Active' => true,
-                'CreatedByUserId' => auth()->id()
-            ]);
-
             //Get the new End Time
             $endTime = Carbon::parse($officialResumeTime)->addSeconds($remainingTime);
 
@@ -2009,6 +1996,18 @@ class DeviceTimeController extends Controller
             if ($response->getStatusCode() == 200) {
 
                 $responseData = json_decode($response->getBody()->getContents(), true);
+
+                $transaction = DeviceTimeTransactions::create([
+                    'DeviceID' => $device->DeviceID,
+                    'TransactionType' => $transactionType,
+                    'Thread' => $thread,
+                    'IsOpenTime' => $isOpenTime,
+                    'TransactionDateTime' => $officialResumeTime,
+                    'Duration' => 0,
+                    'Rate' => 0,
+                    'Active' => true,
+                    'CreatedByUserId' => auth()->id()
+                ]);
                 
                 // Update device status to running
                 $device->DeviceStatusID = DeviceStatusEnum::RUNNING_ID;
