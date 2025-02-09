@@ -162,7 +162,7 @@
                     </div>
                 </div>
                 <div class="h-full overflow-y-hidden">
-                    <div id="wifi-status" class=" text-center bg-red-400 !text-white text-sm"></div>
+                    <div id="wifi-status" class=" text-center bg-red-400 !text-white text-sm !hidden"></div>
                     @yield('content')
                     <script>
                         $(document).ready(function() {
