@@ -308,7 +308,7 @@
         // window.addEventListener('offline', checkWifiStatus);
 
     // Check WiFi status every 5 seconds
-    //setInterval(checkWifiStatus, 5000);
+    //emsetInterval(checkWifiStatus, 5000);
 
         document.addEventListener('DOMContentLoaded', function () {
             const notificationButton = getNotificationButton();
