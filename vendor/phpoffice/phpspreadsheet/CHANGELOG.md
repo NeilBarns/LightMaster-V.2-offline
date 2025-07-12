@@ -5,27 +5,43 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com)
 and this project adheres to [Semantic Versioning](https://semver.org).
 
-## TBD - 3.9.0
-
-### Added
-
-- Nothing yet.
+# 2025-06-22 - 3.9.2
 
 ### Changed
 
-- Nothing yet.
+- Allow php-cs-fixer to Handle Implicit Backslashes.
 
-### Moved
+### Added
 
-- Nothing yet.
-
-### Deprecated
-
-- Nothing yet.
+- Allow spreadsheet to be serialized. [PR #4408](https://github.com/PHPOffice/PhpSpreadsheet/pull/4408)
 
 ### Fixed
 
-- Nothing yet.
+- TEXT and TIMEVALUE functions. [Issue #4249](https://github.com/PHPOffice/PhpSpreadsheet/issues/4249) [PR #4355](https://github.com/PHPOffice/PhpSpreadsheet/pull/4355)
+- Removing Columns/Rows Containing Merged Cells. Backport of [PR #4465](https://github.com/PHPOffice/PhpSpreadsheet/pull/4465)
+- Allow Xlsx Reader to Specify ParseHuge. [Issue #4260](https://github.com/PHPOffice/PhpSpreadsheet/issues/4260) [PR #4518](https://github.com/PHPOffice/PhpSpreadsheet/pull/4518)
+
+## 2025-02-07 - 3.9.1
+
+### Fixed
+
+- Xls writer Parser Mishandling True/False Argument. Backport of [PR #4333](https://github.com/PHPOffice/PhpSpreadsheet/pull/4333)
+- Xls writer Parser Parse By Character Not Byte. Backport of [PR #4344](https://github.com/PHPOffice/PhpSpreadsheet/pull/4344)
+
+## 2025-01-26 - 3.9.0
+
+### Added
+
+- Methods to get style for row or column. [PR #4317](https://github.com/PHPOffice/PhpSpreadsheet/pull/4317)
+- Method for duplicating worksheet in spreadsheet. [PR #4315](https://github.com/PHPOffice/PhpSpreadsheet/pull/4315)
+
+### Fixed
+
+- Security patch for control characters in protocol.
+- Ods Reader Sheet Names with Period. [Issue #4311](https://github.com/PHPOffice/PhpSpreadsheet/issues/4311) [PR #4313](https://github.com/PHPOffice/PhpSpreadsheet/pull/4313)
+- Mpdf and Tcpdf Hidden Columns and Merged Cells. [Issue #4319](https://github.com/PHPOffice/PhpSpreadsheet/issues/4319) [PR #4320](https://github.com/PHPOffice/PhpSpreadsheet/pull/4320)
+- Html Writer Allow mailto. [Issue #4316](https://github.com/PHPOffice/PhpSpreadsheet/issues/4316) [PR #4322](https://github.com/PHPOffice/PhpSpreadsheet/pull/4322)
+- Use composer/pcre rather than preg_* in Writer. [PR #4323](https://github.com/PHPOffice/PhpSpreadsheet/pull/4323)
 
 ## 2025-01-11 - 3.8.0
 
