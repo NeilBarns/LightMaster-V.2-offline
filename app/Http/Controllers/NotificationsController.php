@@ -10,12 +10,11 @@ class NotificationsController extends Controller
 {
     public function GetNotifications()
     {
-        try 
-        {
+        try {
             return Notifications::orderBy('created_at', 'desc')->limit(100)->get();
         } catch (\Exception $e) {
-            Log::error('Error fetching devices', ['error' => $e->getMessage()]);
-            return response()->json(['success' => false, 'message' => 'Failed to retrieve notifications.'], 500);
+            Log::error('Error fetching notifications', ['error' => $e->getMessage()]);
+            return collect();
         }
     }
 }

@@ -41,10 +41,6 @@
     <!-- Chart.js  -->
     <script src="{{ asset('js/chart.js') }}"></script>
 
-    
-
-    <script src="{{ asset('js/functions/websocketHandler.js') }}" defer></script>
-
     <!-- Fomantic IU -->
     <script src="{{ asset('js/jquery.min.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset('css/semantic.min.css') }}">
@@ -100,6 +96,7 @@
     <script defer src="{{ asset('js/Handlers/DeviceDetailedTimeTransactionsReportHandler.js') }}"></script>
     <script defer src="{{ asset('js/Handlers/DeviceDetailedTimeTransactionsReportHandlerExport.js') }}"></script>
     <script defer src="{{ asset('js/Handlers/NotificationsHandler.js') }}"></script>
+    <script defer src="{{ asset('js/functions/websocketHandler.js') }}"></script>
 </head>
 
 <body id="bdy" class="antialiased">
@@ -480,7 +477,8 @@
 
                     let endTime = startTime + totalDuration * 60 * 1000; // Convert totalDuration to milliseconds
 
-                    const currentTime = Date.now();
+                    // const currentTime = Date.now();
+                    const currentTime = nowSynced();
                     const remainingTimeInSeconds = Math.max(0, Math.floor((endTime - currentTime) / 1000));
 
                     // Add 3 seconds to the remaining time

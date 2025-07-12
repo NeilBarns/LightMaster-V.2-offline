@@ -17,6 +17,15 @@ class WebSocketServer implements MessageComponentInterface
     public function onOpen(ConnectionInterface $conn) {
         $this->clients->attach($conn);
         echo "New connection: ({$conn->resourceId})\n";
+
+        //Send initial server time for time sync 
+        //(this will be used to sync the client time with the server)
+        $payload = json_encode([
+            'type' => 'server-time-sync',
+            'serverTime' => round(microtime(true) * 1000), // timestamp in ms
+        ]);
+        echo "Synced time: {$payload}";
+        $conn->send($payload);
     }
 
     public function onMessage(ConnectionInterface $from, $msg) {

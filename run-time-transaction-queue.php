@@ -39,6 +39,8 @@ while (true) {
         exec($command);
         echo 'Async Command executed at ' . now() . PHP_EOL;
 
-        usleep(500000); // Avoid CPU overuse
+        sleep(1);
     }
+
+    usleep(500000); // Avoid CPU overuse
 }

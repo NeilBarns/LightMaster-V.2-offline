@@ -1,4 +1,4 @@
-//#region Element Getters 
+//#region Element Getters
 
 function getDeviceCardElement(deviceId) {
     const deviceCard = document.querySelector(`[data-device-id="${deviceId}"]`);
@@ -12,7 +12,9 @@ function getDeviceCardElement(deviceId) {
 
 function getRemainingTimeNotifValue(deviceCard) {
     if (deviceCard) {
-        let deviceRemTimeNotif = deviceCard.getAttribute('data-remaining-time-notification');
+        let deviceRemTimeNotif = deviceCard.getAttribute(
+            "data-remaining-time-notification"
+        );
 
         if (deviceRemTimeNotif === null || deviceRemTimeNotif < 1) {
             return 0;
@@ -25,7 +27,9 @@ function getRemainingTimeNotifValue(deviceCard) {
 }
 
 function getOpenTimeElement(deviceId) {
-    const openTimeElement = document.querySelector(`.btnOpenTime[data-id="${deviceId}"]`);
+    const openTimeElement = document.querySelector(
+        `.btnOpenTime[data-id="${deviceId}"]`
+    );
 
     if (openTimeElement) {
         return openTimeElement;
@@ -38,7 +42,7 @@ function getOpenTimeTimeElement(deviceId) {
     const openTimeElement = getOpenTimeElement(deviceId);
 
     if (openTimeElement) {
-        const openTime = openTimeElement.getAttribute('data-value');
+        const openTime = openTimeElement.getAttribute("data-value");
         return openTime;
     }
 
@@ -49,7 +53,7 @@ function getOpenTimeRateElement(deviceId) {
     const openTimeElement = getOpenTimeElement(deviceId);
 
     if (openTimeElement) {
-        const openRate = openTimeElement.getAttribute('data-rate');
+        const openRate = openTimeElement.getAttribute("data-rate");
         return openRate;
     }
 
@@ -57,7 +61,9 @@ function getOpenTimeRateElement(deviceId) {
 }
 
 function getRemainingTimerElement(deviceId) {
-    const timerElement = document.getElementById(`lblRemainingTime-${deviceId}`);
+    const timerElement = document.getElementById(
+        `lblRemainingTime-${deviceId}`
+    );
 
     if (timerElement) {
         return timerElement;
@@ -67,7 +73,9 @@ function getRemainingTimerElement(deviceId) {
 }
 
 function getBareTimerElement(deviceId) {
-    const bareTimerElement = document.getElementById(`lblBareRemainingTime-${deviceId}`);
+    const bareTimerElement = document.getElementById(
+        `lblBareRemainingTime-${deviceId}`
+    );
 
     if (bareTimerElement) {
         return bareTimerElement;
@@ -77,7 +85,9 @@ function getBareTimerElement(deviceId) {
 }
 
 function getTotalRateLblElement(deviceId) {
-    const totalRateElement = document.getElementById(`lblTotalRate-${deviceId}`);
+    const totalRateElement = document.getElementById(
+        `lblTotalRate-${deviceId}`
+    );
 
     if (totalRateElement) {
         return totalRateElement;
@@ -87,7 +97,9 @@ function getTotalRateLblElement(deviceId) {
 }
 
 function getTotalTimeLblElement(deviceId) {
-    const totalTimeElement = document.getElementById(`lblTotalTime-${deviceId}`);
+    const totalTimeElement = document.getElementById(
+        `lblTotalTime-${deviceId}`
+    );
 
     if (totalTimeElement) {
         return totalTimeElement;
@@ -107,7 +119,9 @@ function getEndTimeLblElement(deviceId) {
 }
 
 function getStartTimeLblElement(deviceId) {
-    const startTimeElement = document.getElementById(`lblStartTime-${deviceId}`);
+    const startTimeElement = document.getElementById(
+        `lblStartTime-${deviceId}`
+    );
 
     if (startTimeElement) {
         return startTimeElement;
@@ -126,9 +140,10 @@ function getDeviceSyncPopupElement(deviceId) {
     return null;
 }
 
-
 function getDeviceStartTimeCollectionElement(deviceId) {
-    const startTimeCollections = document.querySelector(`.startItems[data-id="${deviceId}"]`);
+    const startTimeCollections = document.querySelector(
+        `.startItems[data-id="${deviceId}"]`
+    );
 
     if (startTimeCollections) {
         return startTimeCollections;
@@ -138,7 +153,9 @@ function getDeviceStartTimeCollectionElement(deviceId) {
 }
 
 function getDeviceEndButtonElement(deviceId) {
-    const btnEndButton = document.querySelector(`.btnEndTime[data-id="${deviceId}"]`);
+    const btnEndButton = document.querySelector(
+        `.btnEndTime[data-id="${deviceId}"]`
+    );
 
     if (btnEndButton) {
         return btnEndButton;
@@ -148,7 +165,9 @@ function getDeviceEndButtonElement(deviceId) {
 }
 
 function getPauseButtonElement(deviceId) {
-    const pauseButton = document.querySelector(`.pause-time-button[data-id="${deviceId}"]`);
+    const pauseButton = document.querySelector(
+        `.pause-time-button[data-id="${deviceId}"]`
+    );
 
     if (pauseButton) {
         return pauseButton;
@@ -158,7 +177,9 @@ function getPauseButtonElement(deviceId) {
 }
 
 function getExtendButtonElement(deviceId) {
-    const extendButton = document.querySelector(`.extend-time-single-button[data-id="${deviceId}"]`);
+    const extendButton = document.querySelector(
+        `.extend-time-single-button[data-id="${deviceId}"]`
+    );
 
     if (extendButton) {
         return extendButton;
@@ -168,7 +189,9 @@ function getExtendButtonElement(deviceId) {
 }
 
 function getExtendMenuButtonElement(deviceId) {
-    const extendMenuButton = document.querySelector(`.extend-items-dropdown[data-id="${deviceId}"]`);
+    const extendMenuButton = document.querySelector(
+        `.extend-items-dropdown[data-id="${deviceId}"]`
+    );
 
     if (extendMenuButton) {
         return extendMenuButton;
@@ -178,7 +201,9 @@ function getExtendMenuButtonElement(deviceId) {
 }
 
 function getResumeButtonElement(deviceId) {
-    const resumeButton = document.querySelector(`.resume-time-button[data-id="${deviceId}"]`);
+    const resumeButton = document.querySelector(
+        `.resume-time-button[data-id="${deviceId}"]`
+    );
 
     if (resumeButton) {
         return resumeButton;
@@ -208,7 +233,9 @@ function getDeviceStatusRibbonElement(deviceId) {
 }
 
 function getDeviceStatusElement(deviceId) {
-    const deviceStatusElement = document.querySelector(`#device-status[data-id="${deviceId}"]`);
+    const deviceStatusElement = document.querySelector(
+        `#device-status[data-id="${deviceId}"]`
+    );
 
     if (deviceStatusElement) {
         return deviceStatusElement;
@@ -222,8 +249,7 @@ function getDeviceStatusIdValue(deviceId) {
     let statusId = null;
 
     if (deviceStatusElement) {
-
-        statusId = deviceStatusElement.getAttribute('data-device-status-id');
+        statusId = deviceStatusElement.getAttribute("data-device-status-id");
         return statusId;
     }
 
@@ -231,10 +257,11 @@ function getDeviceStatusIdValue(deviceId) {
 }
 
 function getEditDeviceNameSection(deviceId) {
-    const divDeviceNameList = document.querySelector(`.divDeviceName[data-id="${deviceId}"]`);
-    
-    if (divDeviceNameList) 
-    {
+    const divDeviceNameList = document.querySelector(
+        `.divDeviceName[data-id="${deviceId}"]`
+    );
+
+    if (divDeviceNameList) {
         return divDeviceNameList;
     }
 
@@ -242,10 +269,11 @@ function getEditDeviceNameSection(deviceId) {
 }
 
 function getLblDeviceName(deviceId) {
-    const lblDeviceName = document.querySelector(`.lblDeviceName[data-id="${deviceId}"]`);
-    
-    if (lblDeviceName) 
-    {
+    const lblDeviceName = document.querySelector(
+        `.lblDeviceName[data-id="${deviceId}"]`
+    );
+
+    if (lblDeviceName) {
         return lblDeviceName;
     }
 
@@ -253,10 +281,11 @@ function getLblDeviceName(deviceId) {
 }
 
 function getBtnSaveName(deviceId) {
-    const btnSaveName = document.querySelector(`.btnSaveName[data-id="${deviceId}"]`);
-    
-    if (btnSaveName) 
-    {
+    const btnSaveName = document.querySelector(
+        `.btnSaveName[data-id="${deviceId}"]`
+    );
+
+    if (btnSaveName) {
         return btnSaveName;
     }
 
@@ -264,10 +293,11 @@ function getBtnSaveName(deviceId) {
 }
 
 function getTxtDeviceName(deviceId) {
-    const txtDeviceName = document.querySelector(`.txtDeviceName[data-id="${deviceId}"]`);
-    
-    if (txtDeviceName) 
-    {
+    const txtDeviceName = document.querySelector(
+        `.txtDeviceName[data-id="${deviceId}"]`
+    );
+
+    if (txtDeviceName) {
         return txtDeviceName;
     }
 
@@ -275,10 +305,11 @@ function getTxtDeviceName(deviceId) {
 }
 
 function getTxtBaseTime(deviceId) {
-    const txtBaseTime = document.querySelector(`.txtBaseTime[data-id="${deviceId}"]`);
-    
-    if (txtBaseTime) 
-    {
+    const txtBaseTime = document.querySelector(
+        `.txtBaseTime[data-id="${deviceId}"]`
+    );
+
+    if (txtBaseTime) {
         return txtBaseTime;
     }
 
@@ -286,10 +317,11 @@ function getTxtBaseTime(deviceId) {
 }
 
 function getTxtBaseRate(deviceId) {
-    const txtBaseRate = document.querySelector(`.txtBaseRate[data-id="${deviceId}"]`);
-    
-    if (txtBaseRate) 
-    {
+    const txtBaseRate = document.querySelector(
+        `.txtBaseRate[data-id="${deviceId}"]`
+    );
+
+    if (txtBaseRate) {
         return txtBaseRate;
     }
 
@@ -297,10 +329,11 @@ function getTxtBaseRate(deviceId) {
 }
 
 function getTxtOpenTime(deviceId) {
-    const txtOpenTime = document.querySelector(`.txtOpenTime[data-id="${deviceId}"]`);
-    
-    if (txtOpenTime) 
-    {
+    const txtOpenTime = document.querySelector(
+        `.txtOpenTime[data-id="${deviceId}"]`
+    );
+
+    if (txtOpenTime) {
         return txtOpenTime;
     }
 
@@ -308,10 +341,11 @@ function getTxtOpenTime(deviceId) {
 }
 
 function getTxtOpenRate(deviceId) {
-    const txtOpenRate = document.querySelector(`.txtOpenRate[data-id="${deviceId}"]`);
-    
-    if (txtOpenRate) 
-    {
+    const txtOpenRate = document.querySelector(
+        `.txtOpenRate[data-id="${deviceId}"]`
+    );
+
+    if (txtOpenRate) {
         return txtOpenRate;
     }
 
@@ -319,10 +353,11 @@ function getTxtOpenRate(deviceId) {
 }
 
 function getTxtFreeTimeLimit(deviceId) {
-    const txtFreeTimeLimit = document.querySelector(`.txtFreeTimeLimit[data-id="${deviceId}"]`);
-    
-    if (txtFreeTimeLimit) 
-    {
+    const txtFreeTimeLimit = document.querySelector(
+        `.txtFreeTimeLimit[data-id="${deviceId}"]`
+    );
+
+    if (txtFreeTimeLimit) {
         return txtFreeTimeLimit;
     }
 
@@ -330,10 +365,11 @@ function getTxtFreeTimeLimit(deviceId) {
 }
 
 function getBannerIncrementStatus(deviceTimeId) {
-    const bannerIncrementStatus = document.querySelector(`.bannerIncrementStatus[data-id="${deviceTimeId}"]`);
-    
-    if (bannerIncrementStatus) 
-    {
+    const bannerIncrementStatus = document.querySelector(
+        `.bannerIncrementStatus[data-id="${deviceTimeId}"]`
+    );
+
+    if (bannerIncrementStatus) {
         return bannerIncrementStatus;
     }
 
@@ -341,10 +377,11 @@ function getBannerIncrementStatus(deviceTimeId) {
 }
 
 function getImageIncrementStatus(deviceTimeId) {
-    const imageIncrementStatus = document.querySelector(`img[data-id="${deviceTimeId}"]`);
-    
-    if (imageIncrementStatus) 
-    {
+    const imageIncrementStatus = document.querySelector(
+        `img[data-id="${deviceTimeId}"]`
+    );
+
+    if (imageIncrementStatus) {
         return imageIncrementStatus;
     }
 
@@ -352,10 +389,11 @@ function getImageIncrementStatus(deviceTimeId) {
 }
 
 function getTxtRemainingTime(deviceId) {
-    const txtRemainingTime = document.querySelector(`.txtRemainingTime[data-id="${deviceId}"]`);
-    
-    if (txtRemainingTime) 
-    {
+    const txtRemainingTime = document.querySelector(
+        `.txtRemainingTime[data-id="${deviceId}"]`
+    );
+
+    if (txtRemainingTime) {
         return txtRemainingTime;
     }
 
@@ -363,10 +401,11 @@ function getTxtRemainingTime(deviceId) {
 }
 
 function getcanvasDeviceLevelRateAndUsage(deviceId) {
-    const canvasDeviceLevelRateAndUsage = document.querySelector(`.canvasDeviceLevelRateAndUsage[data-id="${deviceId}"]`)
-    
-    if (canvasDeviceLevelRateAndUsage) 
-    {
+    const canvasDeviceLevelRateAndUsage = document.querySelector(
+        `.canvasDeviceLevelRateAndUsage[data-id="${deviceId}"]`
+    );
+
+    if (canvasDeviceLevelRateAndUsage) {
         return canvasDeviceLevelRateAndUsage;
     }
 
@@ -374,10 +413,11 @@ function getcanvasDeviceLevelRateAndUsage(deviceId) {
 }
 
 function getBtnMonthlyDeviceLevel(deviceId) {
-    const btnMonthlyDeviceLevel = document.querySelector(`.btnMonthlyDeviceLevel[data-id="${deviceId}"]`);
-    
-    if (btnMonthlyDeviceLevel) 
-    {
+    const btnMonthlyDeviceLevel = document.querySelector(
+        `.btnMonthlyDeviceLevel[data-id="${deviceId}"]`
+    );
+
+    if (btnMonthlyDeviceLevel) {
         return btnMonthlyDeviceLevel;
     }
 
@@ -385,10 +425,11 @@ function getBtnMonthlyDeviceLevel(deviceId) {
 }
 
 function getBtnDailyDeviceLevel(deviceId) {
-    const btnDailyDeviceLevel = document.querySelector(`.btnDailyDeviceLevel[data-id="${deviceId}"]`);
-    
-    if (btnDailyDeviceLevel) 
-    {
+    const btnDailyDeviceLevel = document.querySelector(
+        `.btnDailyDeviceLevel[data-id="${deviceId}"]`
+    );
+
+    if (btnDailyDeviceLevel) {
         return btnDailyDeviceLevel;
     }
 
@@ -396,10 +437,11 @@ function getBtnDailyDeviceLevel(deviceId) {
 }
 
 function getGrdDeviceLevelOverview(deviceId) {
-    const grdDeviceLevelOverview = document.querySelector(`.grdDeviceLevelOverview[data-id="${deviceId}"]`);
-    
-    if (grdDeviceLevelOverview) 
-    {
+    const grdDeviceLevelOverview = document.querySelector(
+        `.grdDeviceLevelOverview[data-id="${deviceId}"]`
+    );
+
+    if (grdDeviceLevelOverview) {
         return grdDeviceLevelOverview;
     }
 
@@ -407,10 +449,11 @@ function getGrdDeviceLevelOverview(deviceId) {
 }
 
 function getGrdDeviceLevelDetailed(deviceId) {
-    const grdDeviceLevelDetailed = document.querySelector(`.grdDeviceLevelDetailed[data-id="${deviceId}"]`);
-    
-    if (grdDeviceLevelDetailed) 
-    {
+    const grdDeviceLevelDetailed = document.querySelector(
+        `.grdDeviceLevelDetailed[data-id="${deviceId}"]`
+    );
+
+    if (grdDeviceLevelDetailed) {
         return grdDeviceLevelDetailed;
     }
 
@@ -419,9 +462,8 @@ function getGrdDeviceLevelDetailed(deviceId) {
 
 function getGrdSessionDetails() {
     const grdSessionDetails = document.querySelector(`.grdSessionDetails`);
-    
-    if (grdSessionDetails) 
-    {
+
+    if (grdSessionDetails) {
         return grdSessionDetails;
     }
 
@@ -429,10 +471,11 @@ function getGrdSessionDetails() {
 }
 
 function getDivDeviceLevelOverview(deviceId) {
-    const divDeviceLevelOverview = document.querySelector(`.divDeviceLevelOverview[data-id="${deviceId}"]`);
-    
-    if (divDeviceLevelOverview) 
-    {
+    const divDeviceLevelOverview = document.querySelector(
+        `.divDeviceLevelOverview[data-id="${deviceId}"]`
+    );
+
+    if (divDeviceLevelOverview) {
         return divDeviceLevelOverview;
     }
 
@@ -440,10 +483,11 @@ function getDivDeviceLevelOverview(deviceId) {
 }
 
 function getDivDeviceLevelDetailed(deviceId) {
-    const divDeviceLevelDetailed = document.querySelector(`.divDeviceLevelDetailed[data-id="${deviceId}"]`);
-    
-    if (divDeviceLevelDetailed) 
-    {
+    const divDeviceLevelDetailed = document.querySelector(
+        `.divDeviceLevelDetailed[data-id="${deviceId}"]`
+    );
+
+    if (divDeviceLevelDetailed) {
         return divDeviceLevelDetailed;
     }
 
@@ -451,10 +495,11 @@ function getDivDeviceLevelDetailed(deviceId) {
 }
 
 function getBtnDeviceLevelOverview(deviceId) {
-    const btnDeviceLevelOverview = document.querySelector(`.btnDeviceLevelOverview[data-id="${deviceId}"]`);
-    
-    if (btnDeviceLevelOverview) 
-    {
+    const btnDeviceLevelOverview = document.querySelector(
+        `.btnDeviceLevelOverview[data-id="${deviceId}"]`
+    );
+
+    if (btnDeviceLevelOverview) {
         return btnDeviceLevelOverview;
     }
 
@@ -462,10 +507,11 @@ function getBtnDeviceLevelOverview(deviceId) {
 }
 
 function getBtnDeviceLevelDetailed(deviceId) {
-    const btnDeviceLevelDetailed = document.querySelector(`.btnDeviceLevelDetailed[data-id="${deviceId}"]`);
-    
-    if (btnDeviceLevelDetailed) 
-    {
+    const btnDeviceLevelDetailed = document.querySelector(
+        `.btnDeviceLevelDetailed[data-id="${deviceId}"]`
+    );
+
+    if (btnDeviceLevelDetailed) {
         return btnDeviceLevelDetailed;
     }
 
@@ -473,10 +519,11 @@ function getBtnDeviceLevelDetailed(deviceId) {
 }
 
 function getGrdFinanceLevelOverview() {
-    const grdFinanceLevelOverview = document.querySelector(`.grdFinanceLevelOverview`);
-    
-    if (grdFinanceLevelOverview) 
-    {
+    const grdFinanceLevelOverview = document.querySelector(
+        `.grdFinanceLevelOverview`
+    );
+
+    if (grdFinanceLevelOverview) {
         return grdFinanceLevelOverview;
     }
 
@@ -484,10 +531,11 @@ function getGrdFinanceLevelOverview() {
 }
 
 function getGrdFinanceLevelOverviewExport() {
-    const grdFinanceLevelOverviewExport = document.querySelector(`#grdFinanceLevelOverviewExport`);
-    
-    if (grdFinanceLevelOverviewExport) 
-    {
+    const grdFinanceLevelOverviewExport = document.querySelector(
+        `#grdFinanceLevelOverviewExport`
+    );
+
+    if (grdFinanceLevelOverviewExport) {
         return grdFinanceLevelOverviewExport;
     }
 
@@ -495,10 +543,11 @@ function getGrdFinanceLevelOverviewExport() {
 }
 
 function getGrdFinanceLevelDetailed() {
-    const grdFinanceLevelDetailed = document.querySelector(`#grdFinanceLevelDetailed`);
-    
-    if (grdFinanceLevelDetailed) 
-    {
+    const grdFinanceLevelDetailed = document.querySelector(
+        `#grdFinanceLevelDetailed`
+    );
+
+    if (grdFinanceLevelDetailed) {
         return grdFinanceLevelDetailed;
     }
 
@@ -506,10 +555,11 @@ function getGrdFinanceLevelDetailed() {
 }
 
 function getGrdFinanceLevelDetailedExport() {
-    const grdFinanceLevelDetailedExport = document.querySelector(`.grdFinanceLevelDetailedExport`);
-    
-    if (grdFinanceLevelDetailedExport) 
-    {
+    const grdFinanceLevelDetailedExport = document.querySelector(
+        `.grdFinanceLevelDetailedExport`
+    );
+
+    if (grdFinanceLevelDetailedExport) {
         return grdFinanceLevelDetailedExport;
     }
 
@@ -517,10 +567,11 @@ function getGrdFinanceLevelDetailedExport() {
 }
 
 function getDateStartDateOverview() {
-    const dateStartDateOverview = document.querySelector(`#dateStartDateOverview`);
-    
-    if (dateStartDateOverview) 
-    {
+    const dateStartDateOverview = document.querySelector(
+        `#dateStartDateOverview`
+    );
+
+    if (dateStartDateOverview) {
         return dateStartDateOverview;
     }
 
@@ -529,9 +580,8 @@ function getDateStartDateOverview() {
 
 function getDateEndDateOverview() {
     const dateEndDateOverview = document.querySelector(`#dateEndDateOverview`);
-    
-    if (dateEndDateOverview) 
-    {
+
+    if (dateEndDateOverview) {
         return dateEndDateOverview;
     }
 
@@ -540,9 +590,8 @@ function getDateEndDateOverview() {
 
 function getDdlDeviceOverview() {
     const ddlDeviceOverview = document.querySelector(`#ddlDeviceOverview`);
-    
-    if (ddlDeviceOverview) 
-    {
+
+    if (ddlDeviceOverview) {
         return ddlDeviceOverview;
     }
 
@@ -550,10 +599,11 @@ function getDdlDeviceOverview() {
 }
 
 function getDateStartDateDetailed() {
-    const dateStartDateDetailed = document.querySelector(`#dateStartDateDetailed`);
-    
-    if (dateStartDateDetailed) 
-    {
+    const dateStartDateDetailed = document.querySelector(
+        `#dateStartDateDetailed`
+    );
+
+    if (dateStartDateDetailed) {
         return dateStartDateDetailed;
     }
 
@@ -562,9 +612,8 @@ function getDateStartDateDetailed() {
 
 function getDateEndDateDetailed() {
     const dateEndDateDetailed = document.querySelector(`#dateEndDateDetailed`);
-    
-    if (dateEndDateDetailed) 
-    {
+
+    if (dateEndDateDetailed) {
         return dateEndDateDetailed;
     }
 
@@ -573,9 +622,8 @@ function getDateEndDateDetailed() {
 
 function getDdlDeviceDetailed() {
     const ddlDeviceDetailed = document.querySelector(`#ddlDeviceDetailed`);
-    
-    if (ddlDeviceDetailed) 
-    {
+
+    if (ddlDeviceDetailed) {
         return ddlDeviceDetailed;
     }
 
@@ -583,10 +631,11 @@ function getDdlDeviceDetailed() {
 }
 
 function getBtnFinanceLevelOverview() {
-    const btnFinanceLevelOverview = document.querySelector(`.btnFinanceLevelOverview`);
-    
-    if (btnFinanceLevelOverview) 
-    {
+    const btnFinanceLevelOverview = document.querySelector(
+        `.btnFinanceLevelOverview`
+    );
+
+    if (btnFinanceLevelOverview) {
         return btnFinanceLevelOverview;
     }
 
@@ -594,10 +643,11 @@ function getBtnFinanceLevelOverview() {
 }
 
 function getBtnFinanceLevelDetailed() {
-    const btnFinanceLevelDetailed = document.querySelector(`.btnFinanceLevelDetailed`);
-    
-    if (btnFinanceLevelDetailed) 
-    {
+    const btnFinanceLevelDetailed = document.querySelector(
+        `.btnFinanceLevelDetailed`
+    );
+
+    if (btnFinanceLevelDetailed) {
         return btnFinanceLevelDetailed;
     }
 
@@ -605,10 +655,11 @@ function getBtnFinanceLevelDetailed() {
 }
 
 function getDivFinanceLevelOverview() {
-    const divFinanceLevelOverview = document.querySelector(`.divFinanceLevelOverview`);
-    
-    if (divFinanceLevelOverview) 
-    {
+    const divFinanceLevelOverview = document.querySelector(
+        `.divFinanceLevelOverview`
+    );
+
+    if (divFinanceLevelOverview) {
         return divFinanceLevelOverview;
     }
 
@@ -616,10 +667,11 @@ function getDivFinanceLevelOverview() {
 }
 
 function getDivFinanceLevelDetailed() {
-    const divFinanceLevelDetailed = document.querySelector(`.divFinanceLevelDetailed`);
-    
-    if (divFinanceLevelDetailed) 
-    {
+    const divFinanceLevelDetailed = document.querySelector(
+        `.divFinanceLevelDetailed`
+    );
+
+    if (divFinanceLevelDetailed) {
         return divFinanceLevelDetailed;
     }
 
@@ -627,10 +679,11 @@ function getDivFinanceLevelDetailed() {
 }
 
 function getIconDevicePendingNetwork(deviceId) {
-    const iconDevicePendingNetwork = document.querySelector(`.iconDevicePendingNetwork[data-id="${deviceId}"]`);
-    
-    if (iconDevicePendingNetwork) 
-    {
+    const iconDevicePendingNetwork = document.querySelector(
+        `.iconDevicePendingNetwork[data-id="${deviceId}"]`
+    );
+
+    if (iconDevicePendingNetwork) {
         return iconDevicePendingNetwork;
     }
 
@@ -638,10 +691,11 @@ function getIconDevicePendingNetwork(deviceId) {
 }
 
 function getIconDeviceOnline(deviceId) {
-    const iconDeviceOnline = document.querySelector(`.iconDeviceOnline[data-id="${deviceId}"]`);
-    
-    if (iconDeviceOnline) 
-    {
+    const iconDeviceOnline = document.querySelector(
+        `.iconDeviceOnline[data-id="${deviceId}"]`
+    );
+
+    if (iconDeviceOnline) {
         return iconDeviceOnline;
     }
 
@@ -649,10 +703,11 @@ function getIconDeviceOnline(deviceId) {
 }
 
 function getIconDeviceOffline(deviceId) {
-    const iconDeviceOffline = document.querySelector(`.iconDeviceOffline[data-id="${deviceId}"]`);
-    
-    if (iconDeviceOffline) 
-    {
+    const iconDeviceOffline = document.querySelector(
+        `.iconDeviceOffline[data-id="${deviceId}"]`
+    );
+
+    if (iconDeviceOffline) {
         return iconDeviceOffline;
     }
 
@@ -660,10 +715,11 @@ function getIconDeviceOffline(deviceId) {
 }
 
 function getIconDeviceLoading(deviceId) {
-    const iconDeviceLoading = document.querySelector(`.iconDeviceLoading[data-id="${deviceId}"]`);
-    
-    if (iconDeviceLoading) 
-    {
+    const iconDeviceLoading = document.querySelector(
+        `.iconDeviceLoading[data-id="${deviceId}"]`
+    );
+
+    if (iconDeviceLoading) {
         return iconDeviceLoading;
     }
 
@@ -672,9 +728,8 @@ function getIconDeviceLoading(deviceId) {
 
 function getNotificationList() {
     const notificationList = document.querySelector(`.notification-list`);
-    
-    if (notificationList) 
-    {
+
+    if (notificationList) {
         return notificationList;
     }
 
@@ -682,10 +737,11 @@ function getNotificationList() {
 }
 
 function getBtnShowNotificationButton() {
-    const btnShowNotificationButton = document.querySelector(`.btnShowNotificationButton`);
-    
-    if (btnShowNotificationButton) 
-    {
+    const btnShowNotificationButton = document.querySelector(
+        `.btnShowNotificationButton`
+    );
+
+    if (btnShowNotificationButton) {
         return btnShowNotificationButton;
     }
 
@@ -693,10 +749,11 @@ function getBtnShowNotificationButton() {
 }
 
 function getBtnShowHasNotificationButton() {
-    const btnShowHasNotificationButton = document.querySelector(`.btnShowHasNotificationButton`);
-    
-    if (btnShowHasNotificationButton) 
-    {
+    const btnShowHasNotificationButton = document.querySelector(
+        `.btnShowHasNotificationButton`
+    );
+
+    if (btnShowHasNotificationButton) {
         return btnShowHasNotificationButton;
     }
 
@@ -704,10 +761,11 @@ function getBtnShowHasNotificationButton() {
 }
 
 function getBtnCloseNotificationButton() {
-    const btnCloseNotificationButton = document.querySelector(`.btnCloseNotificationButton`);
-    
-    if (btnCloseNotificationButton) 
-    {
+    const btnCloseNotificationButton = document.querySelector(
+        `.btnCloseNotificationButton`
+    );
+
+    if (btnCloseNotificationButton) {
         return btnCloseNotificationButton;
     }
 
@@ -715,10 +773,9 @@ function getBtnCloseNotificationButton() {
 }
 
 function getNotificationButton() {
-    const notificationButton = document.getElementById('notification-button');
+    const notificationButton = document.getElementById("notification-button");
 
-    if (notificationButton)
-    {
+    if (notificationButton) {
         return notificationButton;
     }
 
@@ -728,12 +785,12 @@ function getNotificationButton() {
 function getNotificationImage() {
     const notificationButton = getNotificationButton();
 
-    if (notificationButton)
-    {
-        const notificationImage = notificationButton.querySelector('.btnShowNotificationButton');
-    
-        if (notificationImage) 
-        {
+    if (notificationButton) {
+        const notificationImage = notificationButton.querySelector(
+            ".btnShowNotificationButton"
+        );
+
+        if (notificationImage) {
             return notificationImage;
         }
     }
@@ -741,12 +798,10 @@ function getNotificationImage() {
     return null;
 }
 
-function getNotificationSound()
-{
-    const notificationSound = document.getElementById('notificationSound');
+function getNotificationSound() {
+    const notificationSound = document.getElementById("notificationSound");
 
-    if (notificationSound)
-    {
+    if (notificationSound) {
         return notificationSound;
     }
 
@@ -758,20 +813,18 @@ function getNotificationSound()
 function ShowNewNotification() {
     const notificationImage = getNotificationImage();
 
-    if (notificationImage)
-    {
-        const hasNewNotif = notificationImage.dataset.hasNewNotif; 
-        notificationImage.src = hasNewNotif; 
+    if (notificationImage) {
+        const hasNewNotif = notificationImage.dataset.hasNewNotif;
+        notificationImage.src = hasNewNotif;
     }
 }
 
 function ShowNoNewNotification() {
     const notificationImage = getNotificationImage();
 
-    if (notificationImage)
-    {
-        const noNewNotif = notificationImage.dataset.noNewNotif; 
-        notificationImage.src = noNewNotif;    
+    if (notificationImage) {
+        const noNewNotif = notificationImage.dataset.noNewNotif;
+        notificationImage.src = noNewNotif;
     }
 }
 
@@ -780,30 +833,27 @@ function UpdateDeviceCardStatusRibbon(deviceId, newStatus, statusId) {
 
     if (deviceStatusElement) {
         const statusClasses = {
-            'Pending Configuration': 'grey',
-            'Running': 'green',
-            'Inactive': 'yellow',
-            'Disabled': 'red',
-            'Start Free': 'orange'
+            "Pending Configuration": "grey",
+            Running: "green",
+            Inactive: "yellow",
+            Disabled: "red",
+            "Start Free": "orange",
         };
 
         deviceStatusElement.className = `ui ${statusClasses[newStatus]} ribbon label`;
         deviceStatusElement.textContent = newStatus;
-        deviceStatusElement.setAttribute('data-device-status-id', statusId);
+        deviceStatusElement.setAttribute("data-device-status-id", statusId);
     }
 }
 
-function GetTimerIntervalId(deviceId)
-{
+function GetTimerIntervalId(deviceId) {
     let intervalId = 0;
     const deviceStatusElement = getDeviceStatusElement(deviceId);
 
-    if (deviceStatusElement)
-    {
-        intervalId = deviceStatusElement.getAttribute('timer-interval-id');
+    if (deviceStatusElement) {
+        intervalId = deviceStatusElement.getAttribute("timer-interval-id");
 
-        if (intervalId)
-        {
+        if (intervalId) {
             return intervalId;
         }
     }
@@ -816,54 +866,13 @@ function StopTimer(deviceId) {
     if (intervalId) {
         clearInterval(intervalId);
         delete window.cache.intervalIds[deviceId];
-        console.log(`Timer stopped for device ${deviceId}`);
+        // console.log(`Timer stopped for device ${deviceId}`);
     } else {
-        console.log(`No active timer found for device ${deviceId}`);
+        // console.log(`No active timer found for device ${deviceId}`);
     }
 }
 
-function DisableTimeControls(deviceId)
-{
-    const btnEndButton = getDeviceEndButtonElement(deviceId);
-    const startTimeCollections = getDeviceStartTimeCollectionElement(deviceId);
-    const extendButtonMenu = getExtendMenuButtonElement(deviceId);
-    const extendButton = getExtendButtonElement(deviceId);
-    const pauseButton = getPauseButtonElement(deviceId);
-    const resumeButton = getResumeButtonElement(deviceId);
-
-    if (btnEndButton)
-    {
-        btnEndButton.classList.add('disabled');
-    }
-
-    if (startTimeCollections)
-    {
-        startTimeCollections.classList.add('disabled');
-    }
-
-    if (extendButtonMenu) 
-    {
-        extendButtonMenu.classList.add('disabled');
-    }
-
-    if (extendButton) 
-    {    
-        extendButton.classList.add('disabled');
-    }
-    
-    if (pauseButton) 
-    {
-        pauseButton.classList.add('disabled');
-    }
-
-    if (resumeButton) 
-    {
-        resumeButton.classList.add('disabled');
-    }
-}
-
-function UpdateTimeControlersForEnd(deviceId)
-{
+function DisableTimeControls(deviceId) {
     const btnEndButton = getDeviceEndButtonElement(deviceId);
     const startTimeCollections = getDeviceStartTimeCollectionElement(deviceId);
     const extendButtonMenu = getExtendMenuButtonElement(deviceId);
@@ -872,39 +881,31 @@ function UpdateTimeControlersForEnd(deviceId)
     const resumeButton = getResumeButtonElement(deviceId);
 
     if (btnEndButton) {
-        btnEndButton.classList.add('!hidden');
-        btnEndButton.classList.remove('!block');
+        btnEndButton.classList.add("disabled");
     }
-    
+
     if (startTimeCollections) {
-        startTimeCollections.classList.remove('!hidden');
-        startTimeCollections.classList.add('!block');
-        startTimeCollections.classList.remove('disabled');
+        startTimeCollections.classList.add("disabled");
     }
-    
+
     if (extendButtonMenu) {
-        extendButtonMenu.classList.add('disabled');
+        extendButtonMenu.classList.add("disabled");
     }
-    
+
     if (extendButton) {
-        extendButton.classList.add('disabled');
+        extendButton.classList.add("disabled");
     }
-    
+
     if (pauseButton) {
-        pauseButton.classList.remove('!hidden');
-        pauseButton.classList.add('!block');
-        pauseButton.classList.add('disabled');
+        pauseButton.classList.add("disabled");
     }
 
-    if (resumeButton)
-    {
-        resumeButton.classList.add('!hidden');
-        resumeButton.classList.remove('!block');
+    if (resumeButton) {
+        resumeButton.classList.add("disabled");
     }
 }
 
-function UpdateTimeControlersForRunning(deviceId, isOpenTime)
-{
+function UpdateTimeControlersForEnd(deviceId) {
     const btnEndButton = getDeviceEndButtonElement(deviceId);
     const startTimeCollections = getDeviceStartTimeCollectionElement(deviceId);
     const extendButtonMenu = getExtendMenuButtonElement(deviceId);
@@ -913,51 +914,86 @@ function UpdateTimeControlersForRunning(deviceId, isOpenTime)
     const resumeButton = getResumeButtonElement(deviceId);
 
     if (btnEndButton) {
-        btnEndButton.classList.remove('!hidden');
-        btnEndButton.classList.add('!block');
-        btnEndButton.classList.remove('disabled');
+        btnEndButton.classList.add("!hidden");
+        btnEndButton.classList.remove("!block");
     }
-    
+
     if (startTimeCollections) {
-        startTimeCollections.classList.add('!hidden');
-        startTimeCollections.classList.remove('!block');
+        startTimeCollections.classList.remove("!hidden");
+        startTimeCollections.classList.add("!block");
+        startTimeCollections.classList.remove("disabled");
     }
-    
+
+    if (extendButtonMenu) {
+        extendButtonMenu.classList.add("disabled");
+    }
+
+    if (extendButton) {
+        extendButton.classList.add("disabled");
+    }
+
+    if (pauseButton) {
+        pauseButton.classList.remove("!hidden");
+        pauseButton.classList.add("!block");
+        pauseButton.classList.add("disabled");
+    }
+
+    if (resumeButton) {
+        resumeButton.classList.add("!hidden");
+        resumeButton.classList.remove("!block");
+    }
+}
+
+function UpdateTimeControlersForRunning(deviceId, isOpenTime) {
+    const btnEndButton = getDeviceEndButtonElement(deviceId);
+    const startTimeCollections = getDeviceStartTimeCollectionElement(deviceId);
+    const extendButtonMenu = getExtendMenuButtonElement(deviceId);
+    const extendButton = getExtendButtonElement(deviceId);
+    const pauseButton = getPauseButtonElement(deviceId);
+    const resumeButton = getResumeButtonElement(deviceId);
+
+    if (btnEndButton) {
+        btnEndButton.classList.remove("!hidden");
+        btnEndButton.classList.add("!block");
+        btnEndButton.classList.remove("disabled");
+    }
+
+    if (startTimeCollections) {
+        startTimeCollections.classList.add("!hidden");
+        startTimeCollections.classList.remove("!block");
+    }
+
     if (extendButtonMenu) {
         if (!isOpenTime) {
-            extendButtonMenu.classList.remove('disabled');
+            extendButtonMenu.classList.remove("disabled");
         }
     }
-    
+
     if (extendButton) {
         if (!isOpenTime) {
-            extendButton.classList.remove('disabled');
+            extendButton.classList.remove("disabled");
         }
     }
-    
+
     if (pauseButton) {
         if (!isOpenTime) {
-            pauseButton.classList.remove('!hidden');
-            pauseButton.classList.add('!block');
-            pauseButton.classList.remove('disabled');
-        }
-        else
-        {
-            pauseButton.classList.remove('!hidden');
-            pauseButton.classList.add('!block');
-            pauseButton.classList.add('disabled');
+            pauseButton.classList.remove("!hidden");
+            pauseButton.classList.add("!block");
+            pauseButton.classList.remove("disabled");
+        } else {
+            pauseButton.classList.remove("!hidden");
+            pauseButton.classList.add("!block");
+            pauseButton.classList.add("disabled");
         }
     }
 
-    if (resumeButton)
-    {
-        resumeButton.classList.add('!hidden');
-        resumeButton.classList.remove('!block');
+    if (resumeButton) {
+        resumeButton.classList.add("!hidden");
+        resumeButton.classList.remove("!block");
     }
-}   
+}
 
-function UpdateTimeControlersForPause(deviceId)
-{
+function UpdateTimeControlersForPause(deviceId) {
     const btnEndButton = getDeviceEndButtonElement(deviceId);
     const startTimeCollections = getDeviceStartTimeCollectionElement(deviceId);
     const extendButtonMenu = getExtendMenuButtonElement(deviceId);
@@ -966,69 +1002,64 @@ function UpdateTimeControlersForPause(deviceId)
     const resumeButton = getResumeButtonElement(deviceId);
 
     if (startTimeCollections) {
-        startTimeCollections.classList.add('!hidden');
-        startTimeCollections.classList.remove('!block');
+        startTimeCollections.classList.add("!hidden");
+        startTimeCollections.classList.remove("!block");
     }
-    
+
     if (btnEndButton) {
-        btnEndButton.classList.remove('!hidden');
-        btnEndButton.classList.add('!block');
-        btnEndButton.classList.remove('disabled');
+        btnEndButton.classList.remove("!hidden");
+        btnEndButton.classList.add("!block");
+        btnEndButton.classList.remove("disabled");
     }
-    
+
     if (extendButtonMenu) {
-        extendButtonMenu.classList.add('disabled');
+        extendButtonMenu.classList.add("disabled");
     }
-    
+
     if (extendButton) {
-        extendButton.classList.add('disabled');
+        extendButton.classList.add("disabled");
     }
 
-    if (pauseButton) 
-    {
-        pauseButton.classList.add('!hidden');
-        pauseButton.classList.remove('!block');
+    if (pauseButton) {
+        pauseButton.classList.add("!hidden");
+        pauseButton.classList.remove("!block");
     }
 
-    if (resumeButton)
-    {
-        resumeButton.classList.remove('!hidden');
-        resumeButton.classList.add('!block');
-        resumeButton.classList.remove('disabled');
+    if (resumeButton) {
+        resumeButton.classList.remove("!hidden");
+        resumeButton.classList.add("!block");
+        resumeButton.classList.remove("disabled");
     }
 }
 
-function DeviceNetworkLoadingIcon(deviceId, show)
-{
+function DeviceNetworkLoadingIcon(deviceId, show) {
     const iconDeviceLoading = getIconDeviceLoading(deviceId);
     const iconDevicePendingNetwork = getIconDevicePendingNetwork(deviceId);
     const iconDeviceOnline = getIconDeviceOnline(deviceId);
     const iconDeviceOffline = getIconDeviceOffline(deviceId);
 
-    if (iconDeviceLoading)
-    {
-        if (show)
-        {
-            if (iconDevicePendingNetwork && iconDeviceOffline
-                && iconDeviceOffline)
-            {
-                iconDevicePendingNetwork.classList.add('!hidden');
-                iconDevicePendingNetwork.classList.remove('!block');
-        
-                iconDeviceOnline.classList.add('!hidden');
-                iconDeviceOnline.classList.remove('!block');
-        
-                iconDeviceOffline.classList.add('!hidden');
-                iconDeviceOffline.classList.remove('!block');
+    if (iconDeviceLoading) {
+        if (show) {
+            if (
+                iconDevicePendingNetwork &&
+                iconDeviceOffline &&
+                iconDeviceOffline
+            ) {
+                iconDevicePendingNetwork.classList.add("!hidden");
+                iconDevicePendingNetwork.classList.remove("!block");
+
+                iconDeviceOnline.classList.add("!hidden");
+                iconDeviceOnline.classList.remove("!block");
+
+                iconDeviceOffline.classList.add("!hidden");
+                iconDeviceOffline.classList.remove("!block");
             }
 
-            iconDeviceLoading.classList.add('!block');
-            iconDeviceLoading.classList.remove('!hidden');
-        }
-        else 
-        {
-            iconDeviceLoading.classList.remove('!block');
-            iconDeviceLoading.classList.add('!hidden');
+            iconDeviceLoading.classList.add("!block");
+            iconDeviceLoading.classList.remove("!hidden");
+        } else {
+            iconDeviceLoading.classList.remove("!block");
+            iconDeviceLoading.classList.add("!hidden");
         }
     }
 }
