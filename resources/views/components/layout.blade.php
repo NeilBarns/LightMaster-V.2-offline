@@ -21,8 +21,11 @@
     {{--
     <link href="/css/app.css" rel="stylesheet"> --}}
     <script>
+        const wsProtocol = location.protocol === 'https:' ? 'wss' : 'ws';
+        const wsPort = 8080;
+        console.log(`${wsProtocol}://{{ $serverIp }}:${wsPort}`);
         window.appConfig = {
-            websocketUrl: "{{ config('app.websocket_url') }}"
+            websocketUrl: `${wsProtocol}://{{ $serverIp }}:${wsPort}`
         };
     </script>
     <!-- UIkit CSS -->

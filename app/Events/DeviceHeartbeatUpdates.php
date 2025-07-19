@@ -22,13 +22,16 @@ class DeviceHeartbeatUpdates implements ShouldBroadcastNow
     {
         $this->deviceHeartbeatResponse = $deviceHeartbeatResponse;
 
+        $resolvedIp = gethostbyname('lightmaster.local');
+        $websocketUrl = "ws://{$resolvedIp}:8080";
+
         $message = [
             'type' => 'device.heartbeat.updates',
             'payload' => $this->deviceHeartbeatResponse
         ];
 
         try {
-            $client = new Client(config('app.websocket_url'));
+            $client = new Client($websocketUrl);
             $client->send(json_encode($message));
             $client->close();
     

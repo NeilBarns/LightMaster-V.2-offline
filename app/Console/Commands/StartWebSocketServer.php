@@ -24,7 +24,8 @@ class StartWebSocketServer extends Command
                     app(WebSocketServer::class)
                 )
             ),
-            8080 // WebSocket server port
+            8080,
+            '0.0.0.0' // Allow connections from other machines
         );
 
         $this->info('WebSocket server started on port 8080');

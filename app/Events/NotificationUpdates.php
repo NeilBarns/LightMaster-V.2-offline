@@ -25,13 +25,16 @@ class NotificationUpdates implements ShouldBroadcastNow
     {
         $this->notificationResponse = $notificationResponse;
 
+        $resolvedIp = gethostbyname('lightmaster.local');
+        $websocketUrl = "ws://{$resolvedIp}:8080";
+
         $message = [
             'type' => 'device.notification.updates',
             'payload' => $this->notificationResponse
         ];
 
         try {
-            $client = new Client(config('app.websocket_url'));
+            $client = new Client($websocketUrl);
             $client->send(json_encode($message));
             $client->close();
     

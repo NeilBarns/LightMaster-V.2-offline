@@ -20,12 +20,15 @@ class DeviceAddRemoveUpdates implements ShouldBroadcastNow
 
     public function __construct()
     {
+        $resolvedIp = gethostbyname('lightmaster.local');
+        $websocketUrl = "ws://{$resolvedIp}:8080";
+
         $message = [
             'type' => 'device.add.remove.updates'
         ];
 
         try {
-            $client = new Client(config('app.websocket_url'));
+            $client = new Client($websocketUrl);
             $client->send(json_encode($message));
             $client->close();
     

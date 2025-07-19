@@ -24,13 +24,16 @@ class DeviceTransactionUpdates implements ShouldBroadcastNow
     {
         $this->deviceTransactionResponse = $deviceTransactionResponse;
 
+        $resolvedIp = gethostbyname('lightmaster.local');
+        $websocketUrl = "ws://{$resolvedIp}:8080";
+
         $message = [
             'type' => 'device.transaction.updates',
             'payload' => $this->deviceTransactionResponse
         ];
 
         try {
-            $client = new Client(config('app.websocket_url'));
+            $client = new Client($websocketUrl);
             $client->send(json_encode($message));
             $client->close();
     

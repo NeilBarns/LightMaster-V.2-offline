@@ -212,5 +212,5 @@ return [
     ])->toArray(),
 
     'websocket_url' => env('WEBSOCKET_URL', 'ws://127.0.0.1:8080'),
-    'expected_ssid' => env('EXPECTED_SSID')
+    'default_device_name_prefix' => env('DEFAULT_DEVICE_NAME_PREFIX', 'Node'),
 ];

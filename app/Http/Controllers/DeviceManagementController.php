@@ -175,10 +175,20 @@ class DeviceManagementController extends Controller
         $device = new Device();
         
         try {
+            // Check if SerialNumber already exists
+            $existingDevice = Device::where('SerialNumber', $validatedData['SerialNumber'])->first();
+
+            if ($existingDevice) {
+                // Forward to update flow
+                $request->merge([
+                    'DeviceID' => $existingDevice->DeviceID,
+                ]);
+                return $this->UpdateDeviceDetails($request);
+            }
 
             $deviceCount = Device::count();
 
-            $deviceName = env('DEFAULT_DEVICE_NAME') . '-' . $deviceCount + 1;
+            $deviceName = config('app.default_device_name_prefix') . '-' . ($deviceCount + 1);
 
             $device->DeviceName = $deviceName;
             $device->IPAddress = $validatedData['IPAddress'];
@@ -227,10 +237,13 @@ class DeviceManagementController extends Controller
 
     public function UpdateDeviceDetails(Request $request)
     {
-        $validatedData = $request->validate([
-            'DeviceID' => 'integer',
-            'IPAddress' => 'string|max:255'
-        ]);
+        // explicitly decode the JSON payload
+        $data = $request->json()->all();
+
+        $validatedData = validator($data, [
+            'DeviceID' => 'required|integer',
+            'IPAddress' => 'required|string|max:255',
+        ])->validate();
 
         $device = Device::with('deviceStatus')->findOrFail($validatedData['DeviceID']);
 
