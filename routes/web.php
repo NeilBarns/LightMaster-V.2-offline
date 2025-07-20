@@ -59,6 +59,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/device/update/remainingtime', [DeviceManagementController::class, 'UpdateRemainingTimeNotification'])->name('device.update.remainingtime');
     Route::post('/device/exchange', [DeviceManagementController::class, 'UpdateNodeExchange'])->name('device.exchange');
     Route::post('/device/cancel/exchange/{id}', [DeviceManagementController::class, 'UpdateCancelNodeExchange'])->name('device.cancel.exchange');
+    Route::post('/device/update/emergencypass', [DeviceManagementController::class, 'InsertEmergencyPasskey'])->name('device-time.emergencypasskey');
 
     // TIME CONTROLLERS
     Route::get('/device-time/running', [DeviceTimeController::class, 'GetCurrentlyRunningDevices'])->name('device-time.running');

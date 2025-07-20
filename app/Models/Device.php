@@ -23,6 +23,7 @@ class Device extends Model
         'IsOnline',
         'WatchdogInterval',
         'RemainingTimeNotification',
+        'EmergencyPasskey',
         'SerialNumber',
         'IPAddress',
         'last_heartbeat'

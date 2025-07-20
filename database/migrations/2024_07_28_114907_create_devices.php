@@ -21,6 +21,7 @@ return new class extends Migration
             $table->boolean('IsOnline')->nullable();
             $table->string('SerialNumber', 50)->nullable();
             $table->string('IPAddress', 20)->nullable();
+            $table->string('EmergencyPasskey', 50)->nullable();
             $table->unsignedBigInteger('RemainingTimeNotification')->nullable();
             $table->unsignedBigInteger('WatchdogInterval')->nullable();
             $table->dateTime('DeletionDate')->nullable();

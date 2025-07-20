@@ -195,6 +195,7 @@ class DeviceManagementController extends Controller
             $device->SerialNumber = $validatedData['SerialNumber'];
             $device->WatchdogInterval = env('DEFAULT_WATCHDOG_INTERVAL');
             $device->RemainingTimeNotification = env('DEFAULT_REMAINING_TIME_INTERVAL');
+            $device->EmergencyPasskey = env('DEFAULT_EMERGENCY_PASSKEY');
             $device->DeviceStatusID = DeviceStatusEnum::PENDING_ID;
             $device->IsOnline = true;
             $device->last_heartbeat = Carbon::now();
@@ -206,10 +207,79 @@ class DeviceManagementController extends Controller
 
             return response()->json(['success' => true, 'message' => 'Device registered successfully.', 
                                      'device_id' => $device->DeviceID, 
-                                     'default_watchdog_interval' => env('DEFAULT_WATCHDOG_INTERVAL'),], 201);
+                                     'default_watchdog_interval' => env('DEFAULT_WATCHDOG_INTERVAL'),
+                                     'default_emergency_passkey' => env('DEFAULT_EMERGENCY_PASSKEY')], 201);
         } catch (\Exception $e) {
             Log::error('Error inserting device: ' . $device->DeviceName, ['error' => $e->getMessage()]);
             return response()->json(['success' => false, 'message' => 'Failed to register device.', 'error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function InsertEmergencyPasskey(Request $request)
+    {
+        $request->validate([
+            'emergency_passkey' => 'required|string',
+            'device_id' => 'required|integer|exists:Devices,DeviceID',
+        ]);
+
+        try {
+            $device = Device::findOrFail($request->device_id);
+            $deviceIpAddress = $device->IPAddress;
+            $newEmergencyPasskey = $request->emergency_passkey;
+
+            $client = new \GuzzleHttp\Client();
+
+            $response = $client->request('POST', "http://{$deviceIpAddress}/api/emergencypasskey", [
+                'json' => [
+                    'emergencyPasskey' => $newEmergencyPasskey
+                ]
+            ]);
+
+            if ($response->getStatusCode() === 200) {
+                $device->update([
+                    'EmergencyPasskey' => $newEmergencyPasskey,
+                ]);
+
+                LoggingController::InsertLog(
+                    LogEntityEnum::DEVICE,
+                    $device->DeviceID,
+                    'Updated emergency passkey for device: ' . $device->DeviceName,
+                    LogTypeEnum::INFO,
+                    auth()->id()
+                );
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Emergency passkey updated successfully.'
+                ]);
+            }
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Device responded with unexpected status code: ' . $response->getStatusCode()
+            ], $response->getStatusCode());
+
+        } catch (\GuzzleHttp\Exception\RequestException $e) {
+            Log::error('HTTP error while updating emergency passkey for device ID ' . $request->device_id, [
+                'error' => $e->getMessage()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to send passkey to device.',
+                'error' => $e->getMessage()
+            ], 500);
+
+        } catch (\Exception $e) {
+            Log::error('Unexpected error while updating emergency passkey for device ID ' . $request->device_id, [
+                'error' => $e->getMessage()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'An unexpected error occurred.',
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 

@@ -364,6 +364,18 @@ function getTxtFreeTimeLimit(deviceId) {
     return null;
 }
 
+function getTxtEmergencyPass(deviceId) {
+    const txtEmergencyPass = document.querySelector(
+        `.txtEmergencyPass[data-id="${deviceId}"]`
+    );
+
+    if (txtEmergencyPass) {
+        return txtEmergencyPass;
+    }
+
+    return null;
+}
+
 function getBannerIncrementStatus(deviceTimeId) {
     const bannerIncrementStatus = document.querySelector(
         `.bannerIncrementStatus[data-id="${deviceTimeId}"]`

@@ -633,6 +633,60 @@ use App\Enums\PermissionsEnum;
             </div>
         </div>
 
+        <div class="ui divider"></div>
+        <div class="row">
+            <div class="column">
+                <h5 class="ui header">Emergency feature</h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="column">
+                <div class="ui icon message warning">
+                    <div class="content">
+                        <div class="header">
+
+                        </div>
+                        <p>The passkey to be used by the LightNodes to enable emergency manual override.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @can([PermissionsEnum::CAN_VIEW_EMERGENCY_PASSKEY, PermissionsEnum::ALL_ACCESS_TO_DEVICE])
+        <div class="row">
+            <div class="column">
+                <form class="ui form" method="POST">
+                    @csrf
+                    <div class="ui three column stackable grid">
+                        <div class="four wide column">
+                            <div class="field">
+                                <label>Node emergency passkey</label>
+                            </div>
+                            <div class="ui fluid small input">
+                                <input type="input" name="txt_emergencyPass" id="txt_emergencyPass"
+                                    class="txtEmergencyPass ui small input !mr-2"
+                                    data-id="{{ $device->DeviceID }}"
+                                    value="{{ $device->EmergencyPasskey ? $device->EmergencyPasskey : '' }}" required>
+                            </div>
+                        </div>
+                        @can([PermissionsEnum::CAN_EDIT_EMERGENCY_PASSKEY, PermissionsEnum::ALL_ACCESS_TO_DEVICE])
+                        <div class="three wide column">
+                            <div class="field">
+                                <label class="invisible">search</label>
+                            </div>
+                            <button id="saveEmergencyPass" type="button"
+                                class="btnEmergencyPass ui fluid small blue button"
+                                data-id="{{ $device->DeviceID }}">
+                                Save
+                            </button>
+                        </div>
+                        @endcan
+
+                    </div>
+                    <input type="hidden" name="device_id" value="{{ $device->DeviceID }}">
+                </form>
+            </div>
+        </div>
+        @endcan
         @can([PermissionsEnum::CAN_VIEW_DEVICE_SPECIFIC_RATE_USAGE_REPORT,
         PermissionsEnum::ALL_ACCESS_TO_DEVICE])
         <div class="ui divider"></div>

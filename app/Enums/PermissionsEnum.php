@@ -27,4 +27,6 @@ class PermissionsEnum
     const CAN_EDIT_REMAINING_TIME_INTERVAL = 'can_edit_remaining_time_interval';
     const CAN_VIEW_FINANCIAL_REPORTS = 'can_view_financial_reports';
     const CAN_VIEW_ACTIVITY_LOGS_REPORTS = 'can_view_activity_logs_reports';
+    const CAN_VIEW_EMERGENCY_PASSKEY = 'can_view_emergency_passkey';
+    const CAN_EDIT_EMERGENCY_PASSKEY = 'can_edit_emergency_passkey';
 };

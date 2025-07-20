@@ -40,6 +40,8 @@ class PermissionsSeeder extends Seeder
             ['PermissionName' => 'can_edit_device_name', 'Description' => 'Can edit device name'],
             ['PermissionName' => 'can_edit_watchdog_interval', 'Description' => 'Can edit watchdog interval'],
             ['PermissionName' => 'can_edit_remaining_time_interval', 'Description' => 'Can edit remaining time interval'],
+            ['PermissionName' => 'can_view_emergency_passkey', 'Description' => 'Can view node emergency passkey'],
+            ['PermissionName' => 'can_edit_emergency_passkey', 'Description' => 'Can edit node emergency passkey'],
 
 
             //REPORTS
