@@ -523,7 +523,7 @@ class DeviceTimeController extends Controller
             return $this->handleErrorResponse($response, $id);
 
         } catch (\GuzzleHttp\Exception\RequestException $e) {
-            return $this->handleGuzzleException($e, $id);
+            return $this->handleGuzzleException($e, $id, $device->DeviceName);
         } catch (\Exception $e) {
             // Log unexpected errors
             Log::error('Unexpected error starting rated time for device ' . $id, ['error' => $e->getMessage()]);
@@ -638,7 +638,7 @@ class DeviceTimeController extends Controller
             return $this->handleErrorResponse($response, $id);
 
         } catch (\GuzzleHttp\Exception\RequestException $e) {
-            return $this->handleGuzzleException($e, $id);
+            return $this->handleGuzzleException($e, $id, $device->DeviceName);
         } catch (\Exception $e) {
             // Log unexpected errors
             Log::error('Unexpected error starting open time for device ' . $id, ['error' => $e->getMessage()]);
@@ -805,7 +805,7 @@ class DeviceTimeController extends Controller
             return $this->handleErrorResponse($response, $id);
 
         } catch (\GuzzleHttp\Exception\RequestException $e) {
-            return $this->handleGuzzleException($e, $id);
+            return $this->handleGuzzleException($e, $id, $device->DeviceName);
         } catch (\Exception $e) {
             // Log unexpected errors
             Log::error('Unexpected error extending time for device ' . $id, ['error' => $e->getMessage()]);
@@ -1033,7 +1033,7 @@ class DeviceTimeController extends Controller
             return $this->handleErrorResponse($response, $id);
 
         } catch (\GuzzleHttp\Exception\RequestException $e) {
-             return $this->handleGuzzleException($e, $id);
+            return $this->handleGuzzleException($e, $id, $device->DeviceName);
         } catch (\Exception $e) {
             // Log unexpected errors
             Log::error('Unexpected error manually ending time for device ' . $id, ['error' => $e->getTraceAsString()]);
@@ -1199,7 +1199,7 @@ class DeviceTimeController extends Controller
             return $this->handleErrorResponse($response, $id);
 
         } catch (\GuzzleHttp\Exception\RequestException $e) {
-             return $this->handleGuzzleException($e, $id);
+            return $this->handleGuzzleException($e, $id, $device->DeviceName);
         } catch (\Exception $e) {
             // Log unexpected errors
             Log::error('Unexpected error automatically ending time for device ' . $id, ['error' => $e->getMessage()]);
@@ -1469,7 +1469,7 @@ class DeviceTimeController extends Controller
 
             return $this->handleErrorResponse($response, $id);
         } catch (\GuzzleHttp\Exception\RequestException $e) {
-            return $this->handleGuzzleException($e, $id);
+            return $this->handleGuzzleException($e, $id, $device->DeviceName);
         } catch (\Exception $e) {
             // Log unexpected errors
             Log::error('Unexpected error pausing time for device ' . $id, ['error' => $e->getMessage()]);
@@ -2177,7 +2177,7 @@ class DeviceTimeController extends Controller
 
             return $this->handleErrorResponse($response, $id);
         } catch (\GuzzleHttp\Exception\RequestException $e) {
-            return $this->handleGuzzleException($e, $id);
+            return $this->handleGuzzleException($e, $id, $device->DeviceName);
         } catch (\Exception $e) {
             // Log unexpected errors
             Log::error('Unexpected error starting free light for device ' . $id, ['error' => $e->getMessage()]);
@@ -2293,7 +2293,7 @@ class DeviceTimeController extends Controller
 
             return $this->handleErrorResponse($response, $id);
         } catch (\GuzzleHttp\Exception\RequestException $e) {
-            return $this->handleGuzzleException($e, $id);
+            return $this->handleGuzzleException($e, $id, $device->DeviceName);
         } catch (\Exception $e) {
             Log::error('Unexpected error stopping device time for device ' . $id, ['error' => $e->getMessage()]);
             
@@ -2436,7 +2436,7 @@ class DeviceTimeController extends Controller
 
             return $this->handleErrorResponse($response, $id);
         } catch (\GuzzleHttp\Exception\RequestException $e) {
-            return $this->handleGuzzleException($e, $id);
+            return $this->handleGuzzleException($e, $id, $device->DeviceName);
         } catch (\Exception $e) {
             Log::error('Unexpected error stopping device time for device ' . $id, ['error' => $e->getMessage()]);
 
@@ -2583,7 +2583,7 @@ class DeviceTimeController extends Controller
             ]);
 
         } catch (\GuzzleHttp\Exception\RequestException $e) {
-            return $this->handleGuzzleException($e, $id);
+            return $this->handleGuzzleException($e, $id, $device->DeviceName);
         } catch (\Exception $e) {
             // Log unexpected errors
             Log::error('Unexpected error stopping device time for device ' . $id, ['error' => $e->getMessage()]);
@@ -2603,16 +2603,31 @@ class DeviceTimeController extends Controller
         return response()->json(['success' => false, 'message' => 'Unexpected response from device.']);
     }
 
-    protected function handleGuzzleException(\GuzzleHttp\Exception\RequestException $e, $deviceId)
+    protected function handleGuzzleException(\GuzzleHttp\Exception\RequestException $e, $deviceId, $deviceName = null)
     {
         $errorResponse = $e->getResponse();
 
         if ($errorResponse) {
-            $responseBody = json_decode($errorResponse->getBody(), true);
-            Log::error("GuzzleException: Failed to communicate with device at $deviceId", ['error' => $e->getMessage()]);
+            $bodyStr = $errorResponse->getBody()->getContents();
+            $responseBody = json_decode($bodyStr, true);
+
+            Log::error("GuzzleException: Failed to communicate with device at $deviceId", [
+                'error' => $e->getMessage(),
+                'response' => $bodyStr,
+            ]);
 
             if (isset($responseBody['response'])) {
-                return response()->json(['success' => false, 'message' => $responseBody['response']]);
+                if ($responseBody['response'] === "Manual mode") {
+                    return response()->json([
+                        'success' => false,
+                        'message' => $deviceName . ' is in manual or emergency mode. Remote commands are disabled until this mode is turned off on the device.'
+                    ]);
+                } else {
+                    return response()->json([
+                        'success' => false,
+                        'message' => $responseBody['response']
+                    ]);
+                }
             }
         }
 

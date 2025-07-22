@@ -28,7 +28,7 @@ use Illuminate\Support\Facades\Route;
 // Public routes that do not require authentication
 Route::get('/', function () {
     return view('login');
-})->name('login');
+})->name('redirect.login');
 
 Route::get('/login', function () {
     return view('login');

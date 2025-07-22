@@ -307,7 +307,6 @@ class DeviceManagementController extends Controller
 
     public function UpdateDeviceDetails(Request $request)
     {
-        // explicitly decode the JSON payload
         $data = $request->json()->all();
 
         $validatedData = validator($data, [
@@ -315,7 +314,7 @@ class DeviceManagementController extends Controller
             'IPAddress' => 'required|string|max:255',
         ])->validate();
 
-        $device = Device::with('deviceStatus')->findOrFail($validatedData['DeviceID']);
+        $device = Device::find($validatedData['DeviceID']);
 
         try {
             $oldIP = $device->IPAddress;
@@ -331,10 +330,7 @@ class DeviceManagementController extends Controller
 
             //event(new DeviceAddRemoveUpdates());
 
-            return response()->json(['success' => true, 'message' => 'Device updated successfully.', 
-                                     'device_id' => $device->DeviceID, 
-                                     'device_IP_address' => env('DEFAULT_IP'), 'device_gateway' => env('DEFAULT_IP'), 'device_subnet' => env('DEFAULT_IP'),
-                                     'default_watchdog_interval' => '0',], 201);
+            return response()->json(['success' => true, 'device_id' => $device->DeviceID], 200);
         } catch (\Exception $e) {
             Log::error('Error updating device: ' . $device->DeviceID, ['error' => $e->getMessage()]);
             return response()->json(['success' => false, 'message' => 'Failed to update device.', 'error' => $e->getMessage()], 500);
